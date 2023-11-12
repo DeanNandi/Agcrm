@@ -1,0 +1,490 @@
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Applications-page </title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="{% static 'img/german_flag.png' %}" rel="icon">
+    <link href="{% static 'img/german_flag.png' %}" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/quill/quill.snow.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/quill/quill.bubble.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/simple-datatables/style.css' %}" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="{% static '/css/style.css' %}" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+<!-- ======= Header ======= -->
+<header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="d-flex align-items-center justify-content-between">
+        <a href="/" class="logo d-flex align-items-center">
+            <img src="{% static 'img/german_flag.png' %}" alt="">
+            <span class="d-none d-lg-block">AG System</span>
+        </a>
+        <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+    <nav class="header-nav ms-auto">
+        <ul class="d-flex align-items-center">
+            <li class="nav-item dropdown">
+
+                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                    <i class="bi bi-bell"></i>
+
+                    <!--find a notification counting function for the 4-->
+                    <span class="badge bg-primary badge-number">4</span>
+                </a><!-- End Notification Icon -->
+
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+                    <li class="dropdown-header">
+                        <!--find a notification counting function for the 4-->
+                        You have 4 new notifications
+                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                    </li>
+
+                </ul><!-- End Notification Dropdown Items -->
+
+            </li><!-- End Notification Nav -->
+
+            <li class="nav-item dropdown">
+                <!--find a notification counting function for the 3 and implement a chat functionality-->
+
+                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                    <i class="bi bi-chat-left-text"></i>
+
+                    <!--change colour of bg-success-->
+                    <span class="badge bg-success badge-number">3</span>
+                </a><!-- End Messages Icon -->
+
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
+                    <li class="dropdown-header">
+                        You have 3 new messages
+                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+
+                </ul><!-- End Messages Dropdown Items -->
+
+            </li><!-- End Messages Nav -->
+
+            <li class="nav-item dropdown pe-3">
+
+                <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                    <!--                    <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">-->
+                    <span class="d-none d-md-block dropdown-toggle ps-2">Nandi Dean</span>
+                </a><!-- End Profile Iamge Icon -->
+
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                    <li class="dropdown-header">
+                        <h6>Nandi Dean</h6>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                            <i class="bi bi-person"></i>
+                            <span>My Profile</span>
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                            <i class="bi bi-gear"></i>
+                            <span>Account Settings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="#">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span>Sign Out</span>
+                        </a>
+                    </li>
+
+                </ul><!-- End Profile Dropdown Items -->
+            </li><!-- End Profile Nav -->
+
+        </ul>
+    </nav><!-- End Icons Navigation -->
+
+</header><!-- End Header -->
+
+<!-- ======= Sidebar ======= -->
+<aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+        <li class="nav-item">
+            <a class="nav-link " href="/">
+                <i class="bi bi-chevron-double-left"></i>
+                <span>Back Home</span>
+            </a>
+
+        </li><!-- End Dashboard Nav -->
+
+        <li class="nav-heading">Reports</li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-ui-checks"></i>
+                <small> <span>Applications</span></small>
+                <i class="bi bi-chevron-compact-down ms-auto"></i>
+            </a>
+            <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="/">
+                        <i class="bi bi-ban"></i><small><span>Passed and Failed Applicants </span></small>
+                    </a>
+                </li>
+            </ul>
+        </li><!-- End Icons Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#responses-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-passport"></i>
+                <small> <span>Responses</span></small>
+                <i class="bi bi-chevron-compact-down ms-auto"></i>
+            </a>
+            <ul id="responses-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="/">
+                        <i class="bi bi-question-diamond"></i><small><span>Respond To Client</span></small>
+                    </a>
+                </li>
+                <li>
+                    <a href="/">
+                        <i class="bi bi-patch-check-fill"></i><small><span>Responses Made</span></small>
+                    </a>
+                </li>
+            </ul>
+        </li><!-- End Icons Nav -->
+    </ul>
+
+</aside><!-- End Sidebar-->
+
+<main id="main" class="main">
+    <a class="btn btn-outline-secondary" href="applications" role="button">
+        <small>All Applications</small></a>&emsp;&emsp;
+    <a class="btn btn-outline-secondary
+    p-3 mb-2 bg-secondary text-white" href="responses" role="button">
+        <small>Respond To Applications</small></a>&emsp;&emsp;
+    <a class="btn btn-outline-secondary" href="inquiries" role="button">
+        <small>Respond To Inquiries</small></a>&emsp;&emsp;
+
+    <div class="col-12">
+        <div class="container">
+            <div class="card recent-sales overflow-auto">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">Applications in Database <span>| Respond to Applications</span>
+                        <a class="link collapsed" data-bs-target="#Apps-nav" data-bs-toggle="collapse" href="#">
+                            <i class="bi bi-chevron-compact-down ms-auto"></i> </a></h5>
+
+                    <ul id="Apps-nav" class="nav-content collapse ">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Date In</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Age</th>
+                                <th scope="col">Degree</th>
+                                <th scope="col">Reject</th>
+                                <th scope="col">Interview</th>
+                                <th scope="col">Waiting List</th>
+                                <th scope="col">View</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                                <td>@mdo</td>
+                                <td>
+                                    <a class="btn btn-outline-danger" href="applications" role="button">
+                                        <i class="bi bi-shield-exclamation"></i></a>
+                                </td>
+                                <td>
+                                    <a class="btn btn-outline-primary" href="applications" role="button">
+                                        <i class="bi bi-person-raised-hand"></i></a>
+                                </td>
+                                <td>
+                                    <a class="btn btn-outline-warning" href="applications" role="button">
+                                        <i class="bi bi-people-fill"></i></a>
+                                </td>
+                                <td>
+                                    <a class="btn btn-outline-secondary" href="applications" role="button">
+                                        <i class="bi bi-eye"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td>Jacob</td>
+                                <td>Thornton</td>
+                                <td>@fat</td>
+                            </tr>
+                            <tr>
+
+                                <td colspan="2">Larry the Bird</td>
+                                <td>@twitter</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="container">
+            <div class="card recent-sales overflow-auto">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">Rejected Applications <span>| View or Permanently delete Records</span>
+                        <a class="link collapsed" data-bs-target="#Rejects-nav" data-bs-toggle="collapse" href="#">
+                            <i class="bi bi-chevron-compact-down ms-auto"></i> </a></h5>
+
+                    <ul id="Rejects-nav" class="nav-content collapse">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Date In</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Age</th>
+                                <th scope="col">Degree</th>
+                                <th scope="col">Remove</th>
+                                <th scope="col">View</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                                <td>@mdo</td>
+                                <td>
+                                    <a class="btn btn-outline-danger" href="applications" role="button">
+                                        <i class="bi bi-trash3"></i></a>
+                                </td>
+                                <td>
+                                    <a class="btn btn-outline-secondary" href="applications" role="button">
+                                        <i class="bi bi-eye"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td>Jacob</td>
+                                <td>Thornton</td>
+                                <td>@fat</td>
+                            </tr>
+                            <tr>
+
+                                <td colspan="2">Larry the Bird</td>
+                                <td>@twitter</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="container">
+            <div class="card recent-sales overflow-auto">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">Interviews Scheduled <span>| View and edit Interview timelines</span>
+                        <a class="link collapsed" data-bs-target="#interview-nav" data-bs-toggle="collapse" href="#">
+                            <i class="bi bi-chevron-compact-down ms-auto"></i> </a></h5>
+
+                    <ul id="interview-nav" class="nav-content collapse">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Date In</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Age</th>
+                                <th scope="col">Degree</th>
+                                <th scope="col">Interview Date</th>
+                                <th scope="col">Edit</th>
+                                <th scope="col">View</th>
+                                <th scope="col">Passed</th>
+                                <th scope="col">Failed</th>
+                                <th scope="col">Remove</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                                <td>@mdo</td>
+                                <td>@mdo</td>
+                                <td>
+                                    <a class="btn btn-outline-primary" href="applications" role="button">
+                                        <i class="bi bi-pencil-square"></i></a>
+                                </td>
+                                <td>
+                                    <a class="btn btn-outline-secondary" href="applications" role="button">
+                                        <i class="bi bi-eye"></i></a>
+                                </td>
+                                <td>
+                                    <a class="btn btn-outline-success" href="applications" role="button">
+                                        <i class="bi bi-check2-square"></i></a>
+                                </td>
+                                <td>
+                                    <a class="btn btn-outline-warning" href="applications" role="button">
+                                        <i class="bi bi-person-x-fill"></i></a>
+                                </td>
+                                <td>
+                                    <a class="btn btn-outline-danger" href="applications" role="button">
+                                        <i class="bi bi-trash3"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td>Jacob</td>
+                                <td>Thornton</td>
+                                <td>@fat</td>
+                            </tr>
+                            <tr>
+
+                                <td colspan="2">Larry the Bird</td>
+                                <td>@twitter</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="container">
+            <div class="card recent-sales overflow-auto">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">Waiting List <span>| View and edit Applications on Waiting List</span>
+                        <a class="link collapsed" data-bs-target="#waiting-nav" data-bs-toggle="collapse" href="#">
+                            <i class="bi bi-chevron-compact-down ms-auto"></i> </a></h5>
+
+                    <ul id="waiting-nav" class="nav-content collapse">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Date In</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Age</th>
+                                <th scope="col">Degree</th>
+                                <th scope="col">View</th>
+                                <th scope="col">Remove</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                                <td>@mdo</td>
+
+                                <td>
+                                    <a class="btn btn-outline-secondary" href="applications" role="button">
+                                        <i class="bi bi-eye"></i></a>
+                                </td>
+                                <td>
+                                    <a class="btn btn-outline-danger" href="applications" role="button">
+                                        <i class="bi bi-trash3"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td>Jacob</td>
+                                <td>Thornton</td>
+                                <td>@fat</td>
+                            </tr>
+                            <tr>
+
+                                <td colspan="2">Larry the Bird</td>
+                                <td>@twitter</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main><!-- End #main -->
+
+
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
+
+<!-- Vendor JS Files -->
+<script src="{% static 'vendor/apexcharts/apexcharts.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/chart.js' %}/chart.umd.js' %}"></script>
+<script src="{% static 'vendor/echarts/echarts.min.js' %}"></script>
+<script src="{% static 'vendor/quill/quill.min.js' %}"></script>
+<script src="{% static 'vendor/simple-datatables/simple-datatables.js' %}"></script>
+<script src="{% static 'vendor/tinymce/tinymce.min.js' %}"></script>
+<script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+
+<!-- Template Main JS File -->
+<script src="{% static '/js/main.js' %}"></script>
+
+</body>
+
+</html>
