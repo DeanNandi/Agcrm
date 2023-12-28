@@ -90,7 +90,10 @@ WSGI_APPLICATION = 'crmsystem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'HOST': '/cloudsql/ag-german-insitute:us-central1:german-instance',
+        'USER': 'Admin',
+        'PASSWORD': 'H~(yUi]"s&\xs&3J',
+        'NAME': 'institute-database',
     }
 }
 
