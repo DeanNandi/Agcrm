@@ -1,0 +1,13 @@
+<!-- edit_results_modal.html -->
+<div class="modal-body">
+<h5 class="modal-title" id="editResultsModalLabel"><strong><u>Update Interview Results</u></strong></h5>
+    <br>
+    <form id="editResultsForm" method="post" action="{% url 'edit_results' candidate.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+    </form>
+</div>

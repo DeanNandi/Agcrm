@@ -1,11 +1,13 @@
+{% load crispy_forms_tags %}
 {% load static %}
+{% block content %}
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Applications-page </title>
+    <title>AG-System </title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -155,103 +157,71 @@
             </a>
 
         </li><!-- End Dashboard Nav -->
-
-        <li class="nav-heading">Reports</li>
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-ui-checks"></i>
-                <small> <span>Applications</span></small>
-                <i class="bi bi-chevron-compact-down ms-auto"></i>
-            </a>
-            <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="/">
-                        <i class="bi bi-ban"></i><small><span>Passed and Failed Applicants </span></small>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Icons Nav -->
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#responses-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-passport"></i>
-                <small> <span>Responses</span></small>
-                <i class="bi bi-chevron-compact-down ms-auto"></i>
-            </a>
-            <ul id="responses-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="/">
-                        <i class="bi bi-question-diamond"></i><small><span>Respond To Client</span></small>
-                    </a>
-                </li>
-                <li>
-                    <a href="/">
-                        <i class="bi bi-patch-check-fill"></i><small><span>Responses Made</span></small>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Icons Nav -->
     </ul>
 
 </aside><!-- End Sidebar-->
 
 <main id="main" class="main">
+    
+<!-- record_attendance.html -->
+<div class="col-12">
+    <div class="container overflow-auto">
+        <div class="card-body">
+            <h5 class="card-title">Lecture Information</h5>
+            <div class="container col-md-10 edit_box">
+                <div class="row card-body">
+                    <div class="col-xl">
+                        Lecture: {{ school.lec_first_name }} {{ school.lec_last_name }}<br>
+                        Phone: {{ school.lec_phone_number }}<br>
+                        Email: {{ school.lec_email_address }}<br>
+                        Class: {{ school.lec_class_name }}
+                    </div>
+                </div>
 
-    <a class="btn btn-outline-secondary" href="applications" role="button">
-        <small>All Applications</small></a>&emsp;&emsp;
-    <a class="btn btn-outline-secondary" href="responses" role="button">
-        <small>Respond To Applications</small></a>&emsp;&emsp;
-    <a class="btn btn-outline-secondary
-    p-3 mb-2 bg-secondary text-white" href="inquiries" role="button">
-        <small>Respond To Inquiries</small></a>&emsp;&emsp;
+            <h5 class="card-title">Students Attendance for {{ pupil.lec_first_name }} {{ pupil.lec_last_name }} - {{ school.course_class_no }} - {{ school.course_intake }}</h5>
+                <div class="justify-content-center">
+                    <div class="form-group container">
+                        <form method="POST" class="mt-5" novalidate>
+                            {% csrf_token %}
+                            <fieldset>
+                                {{ formset.management_form }}
+                                {% if formset.non_form_errors %}
+                                    <div class="alert alert-danger">
+                                        <strong>Error(s):</strong>
+                                        <ul>
+                                            {% for error in formset.non_form_errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
 
-<div class="row row-cols-2 row-cols-md-3">
-    <div class="col mb-1">
-<div class="card" style="width: 18rem;">
-  <a href="#" class="card-header btn btn-outline-warning"> Mark as Read</a>
-  <div class="card-body">
-    <h6 class="card-title">Client Name + Date</h6>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    <a href="#" class="btn btn-outline-success">WhatsApp</a>&nbsp;
-    <a href="#" class="btn btn-outline-primary">Email</a>
-  </div>
-</div>
-</div>
-    <div class="col mb-1">
-    <div class="card" style="width: 18rem;">
-      <a href="#" class="card-header btn btn-outline-warning"> Mark as Read</a>
-  <div class="card-body">
-    <h6 class="card-title">Client Name + Date</h6>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    <a href="#" class="btn btn-outline-success">WhatsApp</a>&nbsp;
-    <a href="#" class="btn btn-outline-primary">Email</a>
-  </div>
+                                {% for form in formset.forms %}
+                                    <div class="card border-dark p-3">
+                                        <span class="btn btn-secondary mb-4" style="cursor: default;">
+                                            Record Attendance
+                                        </span>
+                                        <div class="container">
+                                            {% for field in form.visible_fields %}
+                                                <div class="row card-body">
+                                                    <div class="col-xl">{{ field|as_crispy_field }}</div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+
+                                <button type="submit" class="btn btn-primary">POST</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-    <div class="col mb-1">
-     <div class="card" style="width: 18rem;">
-      <a href="#" class="card-header btn btn-outline-warning"> Mark as Read</a>
-  <div class="card-body">
-    <h6 class="card-title">Client Name + Date</h6>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    <a href="#" class="btn btn-outline-success">WhatsApp</a>&nbsp;
-    <a href="#" class="btn btn-outline-primary">Email</a>
-  </div>
-     </div>
-</div>
-    <div class="col mb-1">
-     <div class="card" style="width: 18rem;">
-      <a href="#" class="card-header btn btn-outline-warning"> Mark as Read</a>
-  <div class="card-body">
-    <h6 class="card-title">Client Name + Date</h6>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    <a href="#" class="btn btn-outline-success">WhatsApp</a>&nbsp;
-    <a href="#" class="btn btn-outline-primary">Email</a>
-  </div>
-     </div>
-</div>
-</div>
+
+
 </main><!-- End #main -->
 
 
@@ -274,3 +244,4 @@
 </body>
 
 </html>
+{% endblock %}

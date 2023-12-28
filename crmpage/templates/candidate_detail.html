@@ -1,0 +1,322 @@
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AG-System </title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Favicons -->
+    <link href="{% static 'img/german_flag.png' %}" rel="icon">
+    <link href="{% static 'img/german_flag.png' %}" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/quill/quill.snow.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/quill/quill.bubble.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/simple-datatables/style.css' %}" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="{% static '/css/style.css' %}" rel="stylesheet">
+    <!--search form-->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- Custom styles -->
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f8f9fa;
+            color: #495057;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap; /* Allow cards to wrap to the next line */
+            justify-content: space-between;
+            max-width: 1200px; /* Adjust the maximum width as needed */
+        }
+
+        .card {
+            width: 48%; /* Adjust the width as needed */
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+        }
+
+        h1 {
+            color: #343a40;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        strong {
+            font-weight: bold;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ======= Header ======= -->
+<header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="d-flex align-items-center justify-content-between">
+        <a href="/" class="logo d-flex align-items-center">
+            <img src="{% static 'img/german_flag.png' %}" alt="">
+            <span class="d-none d-lg-block">AG System</span>
+        </a>
+        <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+</header><!-- End Header -->
+{% if user.is_authenticated %}
+
+<!-- ======= Sidebar ======= -->
+<aside id="sidebar" class="sidebar">
+    <ul class="sidebar-nav" id="sidebar-nav">
+<!-- Students' Tab -->
+<li class="nav-item">
+    <a class="nav-link" href="/student-card">
+        <i class="bi bi-chevron-double-left"></i>
+        <span>Students' Tab</span>
+    </a>
+</li>
+        <li class="nav-item">
+            <a class="nav-link " href="/candidates">
+                <i class="bi bi-chevron-double-left"></i>
+                <span>Candidates' Tab</span>
+            </a>
+
+        </li><!-- End Dashboard Nav -->
+
+        <!-- Coursework Marks -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-card-list"></i>
+                <span>Coursework Marks</span>
+            </a>
+        </li>
+
+
+        <!-- Exams Marks -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-file-bar-graph"></i>
+                <span>Exam Marks</span>
+            </a>
+        </li>
+        <!-- Attendance -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-person-check"></i>
+                <span>Attendance</span>
+            </a>
+        </li>
+
+        <!-- Fee Structures -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-cash"></i>
+                <span>Fee Structures</span>
+            </a>
+        </li>
+
+        <!-- Fee Statements -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-file-earmark-text"></i>
+                <span>Fee Statements</span>
+            </a>
+        </li>
+        <!-- Contract Tab -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-file-earmark-font"></i>
+                <span>Signed Contract</span>
+            </a>
+        </li>
+
+
+    </ul>
+</aside><!-- End Sidebar-->
+
+<main id="main" class="main">
+
+    <div class="col-12">
+        <div class="container overflow-auto">
+        <div class="card-body">
+            <h5 class="card-title">Registered Student </h5>
+                    <div class="container col-md-10 edit_box justify-content-center">
+                        <div class="card-container">
+                            <!-- Left Card for Image -->
+                            <div class="card" style="width: 30%; max-height: 300px;">
+                                {% if candidate.photo %}
+                                <img src="{{ candidate.photo.url }}" alt="Candidate Photo"
+                                     style="max-height: 200px; width: auto;"><br>
+                                <h3 class="text-center">{{ candidate.First_Name }} {{ candidate.Last_Name }}</h3>
+                                {% else %}
+                                <p><strong>No Photo Available</strong></p>
+                                {% endif %}
+                            </div>
+
+                            <!-- Right Card for Candidate Details in a Table -->
+                            <div class="card" style="width: 65%;">
+                                <div class="text-center border-dark p-3">
+                                <div class="card-header card-title">Student Profile
+                                </div>
+                                <table>
+                                    <tbody>
+                                    <tr>
+                                        <td><strong>First Name:</strong></td>
+                                        <td>{{ candidate.First_Name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Other Names:</strong></td>
+                                        <td>{{ candidate.Last_Name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Date of Birth:</strong></td>
+                                        <td>{{ candidate.Date_of_Birth }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Sex:</strong></td>
+                                        <td>{{ candidate.Sex }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Address:</strong></td>
+                                        <td>{{ candidate.Address }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Telephone:</strong></td>
+                                        <td>{{ candidate.phone_number }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Mail:</strong></td>
+                                        <td>{{ candidate.email_address }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Scheduled Interview Date:</strong></td>
+                                        <td>{{ candidate.Schedule_Interview_date }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Scheduled Interview Time:</strong></td>
+                                        <td>{{ candidate.Schedule_Interview_time }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Interview Results:</strong></td>
+                                        <td>{{ candidate.Results }}</td>
+                                    </tr>
+                                    <!-- Add other rows as needed -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                            <!-- No Card for Course Intake (Directly below the details card) -->
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>Course Intake</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{ candidate.course_intake }}</td>
+                                </tr>
+                                <!-- Add more rows if needed -->
+                                </tbody>
+                            </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+     {% else %}
+
+            <div class="pagetitle">
+       <h1>CRM System</h1>
+        <nav>
+            <ol class="breadcrumb"> login to access the system
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+          <section class="section align-items-center justify-content-center py-4">
+        <div class="container">
+          <div class="row justify-content-center ">
+            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+    <img src="{% static 'img/german_logo_new.png' %}" alt="">
+     <h6><span><br>To Sign in <a href="login">Click here </a></span></h6>
+    <p>Contact the administrator in case <br> any resource is not available.</p>
+                    </div>
+          </div>
+        </div>
+
+      </section>
+    {% endif %}
+</main><!-- End #main -->
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
+
+<!-- Bootstrap JS and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Template Main JS File -->
+<script src="{% static '/js/main.js' %}"></script>
+</body>
+</html>
+{% endblock %}

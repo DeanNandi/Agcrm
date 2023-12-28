@@ -16,9 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.i18n import JavaScriptCatalog
+from crmsystem import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
+  path('jsi18n', JavaScriptCatalog.as_view(), name='js-catlog'),
   path('admin/', admin.site.urls),
   path('', include('crmpage.urls')),
   path('crmpage/', include('crmpage.urls')),
-]
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class List</title>
+    <style>
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: black;
+            color: white;
+        }
+
+        @page {
+            size: a4 landscape;
+            margin: 20mm;  /* Adjust the margin as needed */
+        }
+
+        .signature-column {
+            width: 100px;
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+
+{% for school in school %}
+    <h5 class="card-title">{{ school.course_class_no }} - {{ school.course_intake }}</h5>
+    <h6>Teacher Name: {{ school.lec_first_name }} {{ school.lec_last_name }}</h6>
+    <h3>Participants</h3>
+
+    <table id="example" class="table table-striped overflow-auto" border="1" style="width:100%">
+        <thead>
+        <tr>
+            <th class="signature-column">Student</th>
+            {% for day in weekdays_range %}
+                <th class="signature-column">{{ day|date:"D d M" }}</th>
+                <!-- Add more signature columns as needed -->
+            {% endfor %}
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for student in all_students %}
+            {% if student.course_class_no == school.course_class_no and student.course_intake == school.course_intake %}
+                <tr>
+                    <td>{{ student.student_first_name }} {{ student.student_second_name }}</td>
+                    {% for _ in weekdays_range %}
+                        <td class="signature-column"></td>
+                        <!-- Add more signature columns as needed -->
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endfor %}
+</body>
+</html>

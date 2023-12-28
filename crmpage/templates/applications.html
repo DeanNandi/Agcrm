@@ -9,6 +9,7 @@
     <meta content="" name="description">
     <meta content="" name="keywords">
 
+
     <!-- Favicons -->
     <link href="{% static 'img/german_flag.png' %}" rel="icon">
     <link href="{% static 'img/german_flag.png' %}" rel="apple-touch-icon">
@@ -29,7 +30,21 @@
 
     <!-- Template Main CSS File -->
     <link href="{% static '/css/style.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
 
+    <!--    top buttons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.20.0/font/bootstrap-icons.css" rel="stylesheet">
+<!-- Dropdown Website CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </head>
 
@@ -45,109 +60,21 @@
         <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
 
-    <nav class="header-nav ms-auto">
-        <ul class="d-flex align-items-center">
-            <li class="nav-item dropdown">
-
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                    <i class="bi bi-bell"></i>
-
-                    <!--find a notification counting function for the 4-->
-                    <span class="badge bg-primary badge-number">4</span>
-                </a><!-- End Notification Icon -->
-
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-                    <li class="dropdown-header">
-                        <!--find a notification counting function for the 4-->
-                        You have 4 new notifications
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-
-                </ul><!-- End Notification Dropdown Items -->
-
-            </li><!-- End Notification Nav -->
-
-            <li class="nav-item dropdown">
-                <!--find a notification counting function for the 3 and implement a chat functionality-->
-
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                    <i class="bi bi-chat-left-text"></i>
-
-                    <!--change colour of bg-success-->
-                    <span class="badge bg-success badge-number">3</span>
-                </a><!-- End Messages Icon -->
-
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-                    <li class="dropdown-header">
-                        You have 3 new messages
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                </ul><!-- End Messages Dropdown Items -->
-
-            </li><!-- End Messages Nav -->
-
-            <li class="nav-item dropdown pe-3">
-
-                <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                    <!--                    <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">-->
-                    <span class="d-none d-md-block dropdown-toggle ps-2">Nandi Dean</span>
-                </a><!-- End Profile Iamge Icon -->
-
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-                    <li class="dropdown-header">
-                        <h6>Nandi Dean</h6>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                            <i class="bi bi-person"></i>
-                            <span>My Profile</span>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                            <i class="bi bi-gear"></i>
-                            <span>Account Settings</span>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="#">
-                            <i class="bi bi-box-arrow-right"></i>
-                            <span>Sign Out</span>
-                        </a>
-                    </li>
-
-                </ul><!-- End Profile Dropdown Items -->
-            </li><!-- End Profile Nav -->
-
-        </ul>
-    </nav><!-- End Icons Navigation -->
-
 </header><!-- End Header -->
+{% if user.is_authenticated %}
 
 <!-- ======= Sidebar ======= -->
 <aside id="sidebar" class="sidebar">
-
     <ul class="sidebar-nav" id="sidebar-nav">
+{% if filter_sheet2 %}
+        <li class="nav-item">
+            <a class="nav-link " href="{% url 'applications' %}">
+                <i class="bi bi-chevron-double-left"></i>
+                <span>Website Applications</span>
+            </a>
 
+        </li><!-- End Dashboard Nav -->
+        {% else %}
         <li class="nav-item">
             <a class="nav-link " href="/">
                 <i class="bi bi-chevron-double-left"></i>
@@ -155,103 +82,318 @@
             </a>
 
         </li><!-- End Dashboard Nav -->
+        {% endif %}
+        <li class="nav-heading">Others</li>
 
-        <li class="nav-heading">Reports</li>
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-ui-checks"></i>
-                <small> <span>Applications</span></small>
-                <i class="bi bi-chevron-compact-down ms-auto"></i>
-            </a>
-            <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="/">
-                        <i class="bi bi-ban"></i><small><span>Passed and Failed Applicants</span></small>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Icons Nav -->
-
+    <!--Gloria-->
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#responses-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-passport"></i>
-                <small> <span>Responses</span></small>
+                <small>  <span>Gloria</span></small>
                 <i class="bi bi-chevron-compact-down ms-auto"></i>
             </a>
             <ul id="responses-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="/">
-                        <i class="bi bi-question-diamond"></i><small><span>Respond To Client</span></small>
-                    </a>
-                </li>
-                <li>
-                    <a href="/">
-                        <i class="bi bi-patch-check-fill"></i><small><span>Responses Made</span></small>
+                    <a href="#">
+                        <i class="bi bi-question-diamond"></i><span>Coming Soon</span>
                     </a>
                 </li>
             </ul>
         </li><!-- End Icons Nav -->
+
+    <!--UON NBI-->
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#responses-nav1" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-passport"></i>
+                <small><span>UON-NBI</span> </small>
+                <i class="bi bi-chevron-compact-down ms-auto"></i>
+            </a>
+            <ul id="responses-nav1" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="#">
+                        <i class="bi bi-question-diamond"></i><span>Coming Soon</span>
+                    </a>
+                </li>
+            </ul>
+        </li><!-- End Icons Nav -->
+
+            <!--Dennis-->
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#responses-nav2" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-passport"></i>
+                <small> <span>Dennis</span></small>
+                <i class="bi bi-chevron-compact-down ms-auto"></i>
+            </a>
+            <ul id="responses-nav2" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="#">
+                        <i class="bi bi-question-diamond"></i><span>Coming Soon</span>
+                    </a>
+                </li>
+            </ul>
+        </li><!-- End Icons Nav -->
+            <li class="nav-heading">Important Links</li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="applications">
+          <i class="bi bi-card-list"></i>
+         <small><span>Applications</span></small>
+        </a>
+      </li><!-- End Register Page Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="/admin">
+          <i class="bi bi-box-arrow-in-right"></i>
+         <small><span>Administration Panel</span></small>
+        </a>
+      </li><!-- End Login Page Nav -->
+                        <li class="nav-heading">EXIT</li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="logout">
+                <i class="bi bi-box-arrow-in-left"></i>
+               <small><span>Log-out</span></small>
+            </a>
+        </li><!-- End Logout Page Nav -->
+
     </ul>
 
 </aside><!-- End Sidebar-->
 
 <main id="main" class="main">
-    <button type="button" class="btn btn-outline-secondary
-    p-3 mb-2 bg-secondary text-white"><small>All Applications</small>
-    </button>&emsp;&emsp;
-    <a class="btn btn-outline-secondary" href="responses" role="button">
-    <small>Respond To Applications</small></a>&emsp;&emsp;
-    <a class="btn btn-outline-secondary" href="inquiries" role="button">
-    <small>Respond To Inquiries</small></a>&emsp;&emsp;
+<div class="navbar navbar-expand-lg navbar-light bg-light">
+    <ul class="nav nav-tabs card-header-tabs">
 
-    <div class="col-12">
-        <div class="container">
-            <div class="card recent-sales overflow-auto">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="true" href="{% url 'applications' %}">
+                <i class="bi bi-list"></i>
+                <span class="ms-2">All Applications</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'responses' %}">
+                <i class="bi bi-check-circle"></i>
+                <span class="ms-2">Eligible Applications</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'candidate_list' %}">
+                <i class="bi bi-person"></i>
+                <span class="ms-2">Check Candidate Profile</span>
+            </a>
 
-                <div class="card-body">
-                    <h5 class="card-title">Applications in Database <span>| Search and View Applications</span> </h5>
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th scope="col">Date In</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Age</th>
-                            <th scope="col">Degree</th>
-                            <th scope="col">Full Profile</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
+        </li>
 
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>@mdo</td>
-                            <td>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'student-card' %}">
+                <i class="bi bi-person-check"></i>
+                <span class="ms-2">Confirmed Students</span>
+            </a>
+        </li>
+    </ul>
+</div>
 
-                            <a class="btn btn-outline-secondary" href="applications" role="button">
-                            <i class="bi bi-eye"></i></a>
-                            </td>
-                        </tr>
-                        <tr>
-
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                        </tr>
-                        <tr>
-
-                            <td colspan="2">Larry the Bird</td>
-                            <td>@twitter</td>
-                        </tr>
-                        </tbody>
-                    </table>
+<div class="col-15 ">
+    <div class="row card-body">
+        <div class="card recent-sales overflow-auto">
+            <h5 class="card-title">
+                {% if filter_sheet2 %}
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="sheetDropdown"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Rosaline Applications on Google Sheets
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="sheetDropdown">
+                        <a class="dropdown-item" href="{% url 'applications' %}">Website Applications</a>
+                        <!-- Add other dropdown items as needed -->
+                    </div>
                 </div>
-            </div>
+                {% else %}
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="sheetDropdown2"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Website Applications on Google Sheets
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="sheetDropdown2">
+                        <a class="dropdown-item" href="?filter_sheet2=true">Rosaline Applications</a>
+                        <!-- Add other dropdown items as needed -->
+                    </div>
+                </div>
+                {% endif %}
+                <br>
+                <span>
+                    {% if filter_sheet2 %}
+                    <td><a href="update_sheet2_database/"
+                           class="btn btn-warning btn-sm"
+                           role="button" aria-pressed="true">
+                    <!--Updates Sheet 2 Database-->
+                            Refresh Database</a></td>
+                    {% else %}
+                    <td><a href="update_database/"
+                           class="btn btn-warning btn-sm"
+                           role="button" aria-pressed="true">
+                            Refresh Database</a></td>
+                    {% endif %}
+                </span>
+            </h5>
+            <table id="example" class="table table-striped overflow-auto" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Day In</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Response</th>
+                        <th>Eligibility</th>
+                        <th>Profile</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% if filter_sheet2 %}
+                        {% for sheet2app in sheet2 %}
+                            <tr>
+                                <td>{{ sheet2app.id }}</td>
+                                <td>{{ sheet2app.timestamp }}</td>
+                                <td>{{ sheet2app.name }}</td>
+                                <td>{{ sheet2app.email }}</td>
+                                <td>{{ sheet2app.get_Reply_display }}</td>
+                                <td>
+                                    <a href="{% url 'apps_edit' pk=sheet2app.id model_type='sheet2application' %}"
+                                       class="btn btn-warning btn-sm" role="button" aria-pressed="true">
+                                        Respond
+                                    </a>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                            data-target="#myModalSheet2{{ sheet2app.id }}">
+                                        Info
+                                    </button>
+                                </td>
+                                <!-- Add other fields from Sheet2Application model as needed -->
+                            </tr>
+
+                    <!-- Modal for Sheet2Application -->
+                    <div class="modal fade" id="myModalSheet2{{ sheet2app.id }}" tabindex="-1" role="dialog"
+                         aria-labelledby="myModalLabelSheet2{{ sheet2app.id }}">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="myModalLabel1">Additional Information for <strong>{{ sheet2app.name }}</strong></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div>
+                                        <p><strong>Age:</strong> {{ sheet2app.age }}</p>
+                                        <hr>
+                                        <p><strong>Qualification:</strong> {{ sheet2app.qualification }}</p>
+                                        <hr>
+                                        <p><strong>Location:</strong> {{ sheet2app.location }}</p>
+                                        <hr>
+                                        <p><strong>German Level:</strong> {{ sheet2app.level_of_german }}</p>
+                                        <hr>
+                                        <p><strong>Preferred Class Time:</strong> {{ sheet2app.time_for_class }}</p>
+                                        <hr>
+                                        <p><strong>When To Start:</strong> {{ sheet2app.enrol_in_course }}</p>
+                                        <hr>
+                                        <p><strong>Questions/Comments Raised:</strong> {{ sheet2app.questions }}</p>
+                                        <!-- Add other fields as needed -->
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        {% endfor %}
+                    {% else %}
+                        {% for data in data %}
+                            <tr>
+                                <td>{{ data.id }}</td>
+                                <td>{{ data.timestamp }}</td>
+                                <td>{{ data.name }}</td>
+                                <td>{{ data.email }}</td>
+                                <td>{{ data.get_Reply_display }}</td>
+                                <td>
+                                    <a href="{% url 'apps_edit' pk=data.id model_type='application' %}"
+                                       class="btn btn-warning btn-sm" role="button" aria-pressed="true">
+                                        Respond
+                                    </a>
+                                </td>
+                                <td>
+                                    <!-- Button trigger modal -->
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                            data-target="#myModal{{ data.id }}">
+                                        Info
+                                    </button>
+                                </td>
+                            </tr>
+                    <!-- Modal for Application -->
+                    <div class="modal fade" id="myModal{{ data.id }}" tabindex="-1" role="dialog"
+                         aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="myModalLabel">Additional Information for <strong>{{ data.name }}</strong></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div>
+                                        <p><strong>Age:</strong> {{ data.age }}</p>
+                                        <hr>
+                                        <p><strong>Qualification:</strong> {{ data.qualification }}</p>
+                                        <hr>
+                                        <p><strong>Location:</strong> {{ data.location }}</p>
+                                        <hr>
+                                        <p><strong>German Level:</strong> {{ data.level_of_german }}</p>
+                                        <hr>
+                                        <p><strong>Preferred Class Time:</strong> {{ data.time_for_class }}</p>
+                                        <hr>
+                                        <p><strong>When To Start:</strong> {{ data.enrol_in_course }}</p>
+                                        <hr>
+                                        <p><strong>Questions/Comments Raised:</strong> {{ data.questions }}</p>
+                                        <!-- Add other fields as needed -->
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
+ {% else %}
 
+            <div class="pagetitle">
+       <h1>CRM System</h1>
+        <nav>
+            <ol class="breadcrumb"> login to access the system
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+          <section class="section align-items-center justify-content-center py-4">
+        <div class="container">
+          <div class="row justify-content-center ">
+            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+    <img src="{% static 'img/german_logo_new.png' %}" alt="">
+     <h6><span><br>To Sign in <a href="login">Click here </a></span></h6>
+    <p>Contact the administrator in case <br> any resource is not available.</p>
+                    </div>
+          </div>
+        </div>
+
+      </section>
+    {% endif %}
 </main><!-- End #main -->
 
 
@@ -270,6 +412,18 @@
 
 <!-- Template Main JS File -->
 <script src="{% static '/js/main.js' %}"></script>
+
+<!--datatables-->
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    // Existing DataTable initialization
+    $(document).ready(function () {
+        $('#example').DataTable();
+    });
+</script>
 
 </body>
 

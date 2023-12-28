@@ -29,7 +29,14 @@
 
     <!-- Template Main CSS File -->
     <link href="{% static '/css/style.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <!-- Modal CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
 </head>
 
@@ -45,113 +52,17 @@
         <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
 
-    <nav class="header-nav ms-auto">
-        <ul class="d-flex align-items-center">
-            <li class="nav-item dropdown">
-
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                    <i class="bi bi-bell"></i>
-
-                    <!--find a notification counting function for the 4-->
-                    <span class="badge bg-primary badge-number">4</span>
-                </a><!-- End Notification Icon -->
-
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-                    <li class="dropdown-header">
-                        <!--find a notification counting function for the 4-->
-                        You have 4 new notifications
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-
-                </ul><!-- End Notification Dropdown Items -->
-
-            </li><!-- End Notification Nav -->
-
-            <li class="nav-item dropdown">
-                <!--find a notification counting function for the 3 and implement a chat functionality-->
-
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                    <i class="bi bi-chat-left-text"></i>
-
-                    <!--change colour of bg-success-->
-                    <span class="badge bg-success badge-number">3</span>
-                </a><!-- End Messages Icon -->
-
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-                    <li class="dropdown-header">
-                        You have 3 new messages
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                </ul><!-- End Messages Dropdown Items -->
-
-            </li><!-- End Messages Nav -->
-
-            <li class="nav-item dropdown pe-3">
-
-                <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                    <!--                    <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">-->
-                    <span class="d-none d-md-block dropdown-toggle ps-2">Nandi Dean</span>
-                </a><!-- End Profile Iamge Icon -->
-
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-                    <li class="dropdown-header">
-                        <h6>Nandi Dean</h6>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                            <i class="bi bi-person"></i>
-                            <span>My Profile</span>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                            <i class="bi bi-gear"></i>
-                            <span>Account Settings</span>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="#">
-                            <i class="bi bi-box-arrow-right"></i>
-                            <span>Sign Out</span>
-                        </a>
-                    </li>
-
-                </ul><!-- End Profile Dropdown Items -->
-            </li><!-- End Profile Nav -->
-
-        </ul>
-    </nav><!-- End Icons Navigation -->
-
 </header><!-- End Header -->
-
+{% if user.is_authenticated %}
 <!-- ======= Sidebar ======= -->
 <aside id="sidebar" class="sidebar">
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
         <li class="nav-item">
-            <a class="nav-link " href="/">
+            <a class="nav-link " href="applications">
                 <i class="bi bi-chevron-double-left"></i>
-                <span>Back Home</span>
+                <span>Applications Tab</span>
             </a>
 
         </li><!-- End Dashboard Nav -->
@@ -161,311 +72,288 @@
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-ui-checks"></i>
-                <small> <span>Applications</span></small>
+                <small> <span>Add Applications</span></small>
                 <i class="bi bi-chevron-compact-down ms-auto"></i>
             </a>
             <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="/">
-                        <i class="bi bi-ban"></i><small><span>Passed and Failed Applicants </span></small>
+                    <a href="add-candidate">
+                        <i class="bi bi-ban"></i><small><span>Add New </span></small>
                     </a>
                 </li>
             </ul>
         </li><!-- End Icons Nav -->
 
+<!--Rejected Applications-->
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#responses-nav" data-bs-toggle="collapse" href="#">
+            <a class="nav-link collapsed" data-bs-target="#responses-nav1" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-passport"></i>
-                <small> <span>Responses</span></small>
+                <small> <span>Rejected Applications</span></small>
                 <i class="bi bi-chevron-compact-down ms-auto"></i>
             </a>
-            <ul id="responses-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <ul id="responses-nav1" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="/">
-                        <i class="bi bi-question-diamond"></i><small><span>Respond To Client</span></small>
-                    </a>
-                </li>
-                <li>
-                    <a href="/">
-                        <i class="bi bi-patch-check-fill"></i><small><span>Responses Made</span></small>
+                    <a href="rejected/">
+                        <i class="bi bi-question-diamond"></i><small><span>Non-Eligible Applications</span></small>
                     </a>
                 </li>
             </ul>
         </li><!-- End Icons Nav -->
+<!--        Waiting List-->
+                <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#responses-nav2" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-passport"></i>
+                <small> <span>Other Applications</span></small>
+                <i class="bi bi-chevron-compact-down ms-auto"></i>
+            </a>
+            <ul id="responses-nav2" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="/later_on/">
+                        <i class="bi bi-question-diamond"></i><small><span>Marked as Not-Now</span></small>
+                    </a>
+                </li>
+
+            </ul>
+        </li><!-- End Icons Nav -->
+                    <li class="nav-heading">Important Links</li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="applications">
+          <i class="bi bi-card-list"></i>
+         <small><span>Applications</span></small>
+        </a>
+      </li><!-- End Register Page Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="/admin">
+          <i class="bi bi-box-arrow-in-right"></i>
+         <small><span>Administration Panel</span></small>
+        </a>
+      </li><!-- End Login Page Nav -->
+                        <li class="nav-heading">EXIT</li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="logout">
+                <i class="bi bi-box-arrow-in-left"></i>
+               <small><span>Log-out</span></small>
+            </a>
+        </li><!-- End Logout Page Nav -->
     </ul>
+
 
 </aside><!-- End Sidebar-->
 
 <main id="main" class="main">
-    <a class="btn btn-outline-secondary" href="applications" role="button">
-        <small>All Applications</small></a>&emsp;&emsp;
-    <a class="btn btn-outline-secondary
-    p-3 mb-2 bg-secondary text-white" href="responses" role="button">
-        <small>Respond To Applications</small></a>&emsp;&emsp;
-    <a class="btn btn-outline-secondary" href="inquiries" role="button">
-        <small>Respond To Inquiries</small></a>&emsp;&emsp;
+<div class="navbar navbar-expand-lg navbar-light bg-light">
+    <ul class="nav nav-tabs card-header-tabs">
+        <li class="nav-item">
+            <a class="nav-link"  href="{% url 'applications' %}">
+                <i class="bi bi-list"></i>
+                <span class="ms-2">All Applications</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="true" href="{% url 'responses' %}">
+                <i class="bi bi-check-circle"></i>
+                <span class="ms-2">Eligible Applications</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'candidate_list' %}">
+                <i class="bi bi-person"></i>
+                <span class="ms-2">Check Candidate Profile</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'student-card' %}">
+                <i class="bi bi-person-check"></i>
+                <span class="ms-2">Confirmed Students</span>
+            </a>
+        </li>
+    </ul>
+</div>
 
+        <br>
+
+    <!--Eligible Applications-->
     <div class="col-12">
         <div class="container">
             <div class="card recent-sales overflow-auto">
 
                 <div class="card-body">
+                    <h5 class="card-title">Eligible Applications <span>| Complete Candidate's Profile</span>
+                    </h5>
 
-                    <h5 class="card-title">Applications in Database <span>| Respond to Applications</span>
-                        <a class="link collapsed" data-bs-target="#Apps-nav" data-bs-toggle="collapse" href="#">
-                            <i class="bi bi-chevron-compact-down ms-auto"></i> </a></h5>
+                    <table id="example1" class="table table-striped" style="width:100%">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Phone Number</th>
+                            <th>Address</th>
+                            <th>Qualification</th>
+                            <th>Complete Profile</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for data in data %}
+                        {% if data.Reply == 'Eligible' %}
+                        <tr>
+                            <td style="width: 10%">
+                                <!-- Link trigger modal -->
+                                <a href="#"  data-toggle="modal"
+                                   data-target="#myModal{{ data.id }}">
+                                    {{ data.name }}
+                                </a>
+                            </td>
 
-                    <ul id="Apps-nav" class="nav-content collapse ">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th scope="col">Date In</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Age</th>
-                                <th scope="col">Degree</th>
-                                <th scope="col">Reject</th>
-                                <th scope="col">Interview</th>
-                                <th scope="col">Waiting List</th>
-                                <th scope="col">View</th>
+                            <td style="width: 10%">{{ data.phone_number }}</td>
+                            <td style="width: 10%">{{ data.location }}</td>
+                            <td style="width: 10%">{{ data.qualification }}</td>
+                            <td style="width: 10%">
+                                {% if data.email in candidate_emails %}
+                                Completed
+                                {% else %}
+                                <a href="add-candidate" class="btn btn-warning btn-sm" role="button"
+                                   aria-pressed="true">
+                                    Update
+                                </a>
+                                {% endif %}
+                            </td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
+                            <!-- Modal -->
+                            <div class="modal fade" id="myModal{{ data.id }}" tabindex="-1" role="dialog"
+                                 aria-labelledby="myModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="myModalLabel">Additional Information for
+                                                <strong>{{ data.name }}</strong></h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                            <div>
+                            <p><strong>Age:</strong> {{ data.age }}</p>
+                            <hr>
+                            <p><strong>Email:</strong> {{ data.email }}</p>
+                            <hr>
+                            <p><strong>License Number:</strong> {{ data.license_number }}</p>
+                            <hr>
+                            <p><strong>German Level:</strong> {{ data.level_of_german }}</p>
+                            <hr>
+                            <p><strong>Preferred Class Time:</strong> {{ data.time_for_class }}</p>
+                            <hr>
+                            <p><strong>When To Start:</strong> {{ data.enrol_in_course }}</p>
+                            <hr>
+                            <p><strong>Questions/Comments Raised:</strong> {{ data.questions }}</p>
+                            <!-- Add other fields as needed -->
+                        </div>
+                                        </div>
 
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                                <td>@mdo</td>
-                                <td>
-                                    <a class="btn btn-outline-danger" href="applications" role="button">
-                                        <i class="bi bi-shield-exclamation"></i></a>
-                                </td>
-                                <td>
-                                    <a class="btn btn-outline-primary" href="applications" role="button">
-                                        <i class="bi bi-person-raised-hand"></i></a>
-                                </td>
-                                <td>
-                                    <a class="btn btn-outline-warning" href="applications" role="button">
-                                        <i class="bi bi-people-fill"></i></a>
-                                </td>
-                                <td>
-                                    <a class="btn btn-outline-secondary" href="applications" role="button">
-                                        <i class="bi bi-eye"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>
 
-                                <td colspan="2">Larry the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
+                            {% endif %}
+                            {% endfor %}
+
+                        {% for sheet2app in sheet2 %}
+                        {% if sheet2app.Reply == 'Eligible' %}
+                        <tr>
+                            <td style="width: 10%">
+                                <!-- Link trigger modal -->
+                                <a href="#" data-toggle="modal"
+                                   data-target="#myModalSheet2{{ sheet2app.id }}">
+                                    {{ sheet2app.name }}
+                                </a>
+                            </td>
+
+                            <td style="width: 10%">{{ sheet2app.phone_number }}</td>
+                            <td style="width: 10%">{{ sheet2app.location }}</td>
+                            <td style="width: 10%">{{ sheet2app.qualification }}</td>
+                            <td style="width: 10%">
+                                {% if sheet2app.email in candidate_emails %}
+                                Completed
+                                {% else %}
+                                <a href="add-candidate" class="btn btn-warning btn-sm" role="button"
+                                   aria-pressed="true">
+                                    Update
+                                </a>
+                                {% endif %}
+                            </td>
+
+                        </tr>
+                         <!-- Modal for Sheet2Application -->
+                    <div class="modal fade" id="myModalSheet2{{ sheet2app.id }}" tabindex="-1" role="dialog"
+                         aria-labelledby="myModalLabelSheet2{{ sheet2app.id }}">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="myModalLabel1">Additional Information for <strong>{{ sheet2app.name }}</strong></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div>
+                                        <p><strong>Age:</strong> {{ sheet2app.age }}</p>
+                                        <hr>
+                                        <p><strong>Qualification:</strong> {{ sheet2app.qualification }}</p>
+                                        <hr>
+                                        <p><strong>Location:</strong> {{ sheet2app.location }}</p>
+                                        <hr>
+                                        <p><strong>German Level:</strong> {{ sheet2app.level_of_german }}</p>
+                                        <hr>
+                                        <p><strong>Preferred Class Time:</strong> {{ sheet2app.time_for_class }}</p>
+                                        <hr>
+                                        <p><strong>When To Start:</strong> {{ sheet2app.enrol_in_course }}</p>
+                                        <hr>
+                                        <p><strong>Questions/Comments Raised:</strong> {{ sheet2app.questions }}</p>
+                                        <!-- Add other fields as needed -->
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        {% endif %}
+                        {% endfor %}
                             </tbody>
                         </table>
-                    </ul>
 
                 </div>
             </div>
         </div>
     </div>
+     {% else %}
 
-    <div class="col-12">
+            <div class="pagetitle">
+       <h1>CRM System</h1>
+        <nav>
+            <ol class="breadcrumb"> login to access the system
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+          <section class="section align-items-center justify-content-center py-4">
         <div class="container">
-            <div class="card recent-sales overflow-auto">
-
-                <div class="card-body">
-
-                    <h5 class="card-title">Rejected Applications <span>| View or Permanently delete Records</span>
-                        <a class="link collapsed" data-bs-target="#Rejects-nav" data-bs-toggle="collapse" href="#">
-                            <i class="bi bi-chevron-compact-down ms-auto"></i> </a></h5>
-
-                    <ul id="Rejects-nav" class="nav-content collapse">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th scope="col">Date In</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Age</th>
-                                <th scope="col">Degree</th>
-                                <th scope="col">Remove</th>
-                                <th scope="col">View</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                                <td>@mdo</td>
-                                <td>
-                                    <a class="btn btn-outline-danger" href="applications" role="button">
-                                        <i class="bi bi-trash3"></i></a>
-                                </td>
-                                <td>
-                                    <a class="btn btn-outline-secondary" href="applications" role="button">
-                                        <i class="bi bi-eye"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>
-
-                                <td colspan="2">Larry the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </ul>
-
-                </div>
-            </div>
+          <div class="row justify-content-center ">
+            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+    <img src="{% static 'img/german_logo_new.png' %}" alt="">
+     <h6><span><br>To Sign in <a href="login">Click here </a></span></h6>
+    <p>Contact the administrator in case <br> any resource is not available.</p>
+                    </div>
+          </div>
         </div>
-    </div>
 
-    <div class="col-12">
-        <div class="container">
-            <div class="card recent-sales overflow-auto">
-
-                <div class="card-body">
-
-                    <h5 class="card-title">Interviews Scheduled <span>| View and edit Interview timelines</span>
-                        <a class="link collapsed" data-bs-target="#interview-nav" data-bs-toggle="collapse" href="#">
-                            <i class="bi bi-chevron-compact-down ms-auto"></i> </a></h5>
-
-                    <ul id="interview-nav" class="nav-content collapse">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th scope="col">Date In</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Age</th>
-                                <th scope="col">Degree</th>
-                                <th scope="col">Interview Date</th>
-                                <th scope="col">Edit</th>
-                                <th scope="col">View</th>
-                                <th scope="col">Passed</th>
-                                <th scope="col">Failed</th>
-                                <th scope="col">Remove</th>
-
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                                <td>@mdo</td>
-                                <td>@mdo</td>
-                                <td>
-                                    <a class="btn btn-outline-primary" href="applications" role="button">
-                                        <i class="bi bi-pencil-square"></i></a>
-                                </td>
-                                <td>
-                                    <a class="btn btn-outline-secondary" href="applications" role="button">
-                                        <i class="bi bi-eye"></i></a>
-                                </td>
-                                <td>
-                                    <a class="btn btn-outline-success" href="applications" role="button">
-                                        <i class="bi bi-check2-square"></i></a>
-                                </td>
-                                <td>
-                                    <a class="btn btn-outline-warning" href="applications" role="button">
-                                        <i class="bi bi-person-x-fill"></i></a>
-                                </td>
-                                <td>
-                                    <a class="btn btn-outline-danger" href="applications" role="button">
-                                        <i class="bi bi-trash3"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>
-
-                                <td colspan="2">Larry the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </ul>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12">
-        <div class="container">
-            <div class="card recent-sales overflow-auto">
-
-                <div class="card-body">
-
-                    <h5 class="card-title">Waiting List <span>| View and edit Applications on Waiting List</span>
-                        <a class="link collapsed" data-bs-target="#waiting-nav" data-bs-toggle="collapse" href="#">
-                            <i class="bi bi-chevron-compact-down ms-auto"></i> </a></h5>
-
-                    <ul id="waiting-nav" class="nav-content collapse">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th scope="col">Date In</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Age</th>
-                                <th scope="col">Degree</th>
-                                <th scope="col">View</th>
-                                <th scope="col">Remove</th>
-
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                                <td>@mdo</td>
-
-                                <td>
-                                    <a class="btn btn-outline-secondary" href="applications" role="button">
-                                        <i class="bi bi-eye"></i></a>
-                                </td>
-                                <td>
-                                    <a class="btn btn-outline-danger" href="applications" role="button">
-                                        <i class="bi bi-trash3"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>
-
-                                <td colspan="2">Larry the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </ul>
-
-                </div>
-            </div>
-        </div>
-    </div>
+      </section>
+    {% endif %}
 </main><!-- End #main -->
 
 
@@ -485,6 +373,21 @@
 <!-- Template Main JS File -->
 <script src="{% static '/js/main.js' %}"></script>
 
+<!--datatables-->
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+
+<script>
+    new DataTable('#example');
+    new DataTable('#example1');
+    new DataTable('#example2');
+    new DataTable('#example3');
+</script>
+
+<!-- Modal JavaScript -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

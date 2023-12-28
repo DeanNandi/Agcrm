@@ -1,0 +1,333 @@
+
+{% load static %}
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Applications-page </title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+
+    <!-- Favicons -->
+    <link href="{% static 'img/german_flag.png' %}" rel="icon">
+    <link href="{% static 'img/german_flag.png' %}" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/quill/quill.snow.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/quill/quill.bubble.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/simple-datatables/style.css' %}" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="{% static '/css/style.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<!--  Modal  -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <style>
+        /* Style for the modal */
+        .modal-body {
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+    </style>
+    <style>
+        .candidateCard {
+            border: 1px solid #ccc;
+            margin: 10px;
+            padding: 10px;
+            width: 300px;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ======= Header ======= -->
+<header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="d-flex align-items-center justify-content-between">
+        <a href="/" class="logo d-flex align-items-center">
+            <img src="{% static 'img/german_flag.png' %}" alt="">
+            <span class="d-none d-lg-block">AG System</span>
+        </a>
+        <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+</header><!-- End Header -->
+
+<!-- ======= Sidebar ======= -->
+<aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+        <li class="nav-item">
+            <a class="nav-link " href="responses">
+                <i class="bi bi-chevron-double-left"></i>
+                <span>Eligible Tab</span>
+            </a>
+
+        </li><!-- End Dashboard Nav -->
+    </ul>
+
+</aside><!-- End Sidebar-->
+
+<main id="main" class="main">
+<div class="navbar">
+    <ul class="nav nav-tabs card-header-tabs">
+        <li class="nav-item">
+            <a class="nav-link"  aria-current="true" href="{% url 'applications' %}"> <small>All
+                Applications</small> </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'responses' %}">  <small> Eligible Applications</small></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="{% url 'updated-candidates' %}">Check Candidate Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'student-card' %}"><small>Confirmed Students</small></a>
+        </li>
+    </ul>
+
+</div>
+
+
+
+    <div class="container mt-4">
+        <div class="card recent-sales overflow-auto">
+            <div class="card-body">
+                <h5 class="card-title">Updated Candidate Profiles <span>| Search and View Applications</span></h5>
+                <div class="mb-3">
+                    <!-- Filter by Address -->
+                    <form method="get" action="{% url 'candidate_list' %}" id="filterForm">
+                        <label for="addressFilter">Select Address:</label>
+                        <select id="addressFilter" name="address">
+                            <option value="" selected disabled>Select Address</option>
+                            {% for choice in ADDRESS %}
+                            <option value="{{ choice.0 }}" {% if choice.0 == request.GET.address %}selected{% endif %}>{{ choice.1 }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <button type="button" onclick="filterCandidates()">Filter by Address</button>
+                    </form>
+
+                    <!-- Filter by other fields -->
+                    <button onclick="filterCandidates('course_class_no')">Filter by Course Class</button>
+                    <button onclick="filterCandidates('course_intake')">Filter by Course Intake</button>
+                    <!-- Add more buttons for other filtering options -->
+                </div>
+
+
+                <div id="candidatesContainer">
+                    {% for candidate in candidates %}
+                       <div class="candidateCard" data-address="{{ candidate.Address }}">
+                            <div class="card h-100">
+                                <div class="card-header card-title">{{ candidate.First_Name }} {{ candidate.Last_Name }}
+                                </div>
+                                <div class="card-body card border-warning mb-3">
+                                    <p class="card-text">Date of Birth: {{ candidate.Date_of_Birth }}</p>
+                                    <p class="card-text">Sex: {{ candidate.Sex }}</p>
+                                    <p class="card-text">Address: {{ candidate.Address }}</p>
+                                    <p><strong>Scheduled Interview Date:</strong> {{candidate.Schedule_Interview_date }}
+                                    </p>
+                                    <p><strong>Scheduled Interview Time:</strong> {{candidate.Schedule_Interview_time }}
+                                    </p>
+                                    <hr>
+                                    <p><strong>Interview Results:</strong> {{ candidate.Results }}</p>
+
+                                    <!-- Add more fields from your model -->
+
+                                    <!-- Add the button for editing -->
+                                    <div class="card-footer text-body-secondary d-flex justify-content-center">
+                                        <button type="button" class="btn btn-dark btn-sm" data-toggle="modal"
+                                                data-url="{% url 'edit_results' candidate_id=candidate.id %}">
+                                            Edit Results
+                                        </button>
+                                    </div>
+
+
+                                    <!--  more Info Modal -->
+                                    <div class="modal fade" id="myModal{{ candidate.id }}" tabindex="-1" role="dialog"
+                                        aria-labelledby="myModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="myModalLabel">Additional Information for
+                                                        <strong>{{ candidate.First_Name }} {{ candidate.Last_Name }}</strong>
+                                                    </h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p><strong>Date of Birth:</strong> {{ candidate.Date_of_Birth }}</p>
+                                                    <hr>
+                                                    <p><strong>Sex:</strong> {{ candidate.Sex }}</p>
+                                                    <hr>
+                                                    <p><strong>Address:</strong> {{ candidate.Address }}</p>
+                                                    <hr>
+                                                    <!-- Add more fields from your model -->
+
+                                                    <p><strong>Scheduled Interview Date:</strong> {{candidate.Schedule_Interview_date }}</p>
+                                                    <p><strong>Scheduled Interview Time:</strong> {{candidate.Schedule_Interview_time }}</p>
+                                                    <hr>
+                                                    <p><strong>Interview Results:</strong> {{ candidate.Results }}</p>
+
+                                                    <!-- Add other fields as needed -->
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Modal edit info -->
+                                    <div class="modal fade" id="editResultsModal" tabindex="-1" role="dialog"
+                                         aria-labelledby="editResultsModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="editResultsModalLabel">Edit Results for
+                                                        <strong>{{ candidate.First_Name }} {{ candidate.Last_Name }}</strong>
+                                                    </h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main><!-- End #main -->
+
+
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
+
+<!-- Vendor JS Files -->
+<script src="{% static 'vendor/apexcharts/apexcharts.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/chart.js' %}/chart.umd.js' %}"></script>
+<script src="{% static 'vendor/echarts/echarts.min.js' %}"></script>
+<script src="{% static 'vendor/quill/quill.min.js' %}"></script>
+<script src="{% static 'vendor/simple-datatables/simple-datatables.js' %}"></script>
+<script src="{% static 'vendor/tinymce/tinymce.min.js' %}"></script>
+<script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+
+<!-- Template Main JS File -->
+<script src="{% static '/js/main.js' %}"></script>
+
+<!-- Your existing template content -->
+
+<!-- Add this JS at the end of your HTML body or in a separate JS file -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+
+<script>
+    $(document).ready(function () {
+        // DataTable initialization
+        new DataTable('#example');
+
+        // Add logic to filter cards based on the search input
+        $("#searchInput").on("input", function () {
+            var value = $(this).val().toLowerCase();
+            $(".row.row-cols-1.row-cols-md-2.row-cols-lg-3.g-4 .col").filter(function () {
+                $(this).parent().toggle($(this).text().toLowerCase().includes(value));
+            });
+        });
+
+        // Adjust modal height dynamically based on the viewport height
+        $('.modal').on('shown.bs.modal', function () {
+            var modal = $(this);
+            var modalContent = modal.find('.modal-body');
+            modalContent.css('max-height', $(window).height() * 0.7);
+            modalContent.css('overflow-y', 'auto');
+        });
+
+</script>
+
+<script>
+        $(document).ready(function () {
+        // Edit Results button click
+        $('[data-url]').click(function () {
+            var url = $(this).data('url');
+            $.get(url, function (data) {
+                // Populate the modal with the fetched data
+                // Note: Adjust this part based on how your modal content is structured
+                $('.modal-content').html(data);
+                $('#editResultsModal').modal('show');
+            });
+        });
+
+        // Edit Results form submission
+        $('#editResultsForm').submit(function (event) {
+            event.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                success: function (response) {
+                    alert(response.message);
+                    $('#editResultsModal').modal('hide');
+                },
+                error: function (response) {
+                    alert(response.responseJSON.error);
+                }
+            });
+        });
+    });
+</script>
+
+    <script>
+        function filterCandidates() {
+            var selectedAddress = document.getElementById('addressFilter').value;
+            var cards = document.getElementsByClassName('candidateCard');
+
+            for (var i = 0; i < cards.length; i++) {
+                var card = cards[i];
+                var cardAddress = card.getAttribute('data-address');
+
+                if (selectedAddress === '' || selectedAddress === cardAddress) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            }
+        }
+    </script>
+
+</body>
+
+</html>

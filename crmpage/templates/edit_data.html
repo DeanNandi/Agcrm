@@ -1,0 +1,242 @@
+{% load crispy_forms_tags %}
+{% load static %}
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>AG-System </title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="{% static 'img/german_flag.png' %}" rel="icon">
+    <link href="{% static 'img/german_flag.png' %}" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/quill/quill.snow.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/quill/quill.bubble.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/simple-datatables/style.css' %}" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="{% static '/css/style.css' %}" rel="stylesheet">
+
+    <!-- Modal CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wy4z77wpi1jWKXK+2XYnXs6WlsO8g1L2tw" crossorigin="anonymous">
+
+
+</head>
+
+<body>
+
+<!-- ======= Header ======= -->
+<header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="d-flex align-items-center justify-content-between">
+        <a href="/" class="logo d-flex align-items-center">
+            <img src="{% static 'img/german_flag.png' %}" alt="">
+            <span class="d-none d-lg-block">AG System</span>
+        </a>
+        <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+</header><!-- End Header -->
+
+<!-- ======= Sidebar ======= -->
+<aside id="sidebar" class="sidebar">
+{% if user.is_authenticated %}
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+        <li class="nav-item">
+            <a class="nav-link " href="/applications">
+                <i class="bi bi-chevron-double-left"></i>
+                <span>Back To Applications</span>
+            </a>
+
+        </li><!-- End Dashboard Nav -->
+
+        <li class="nav-heading">Reports</li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-ui-checks"></i>
+                <small> <span>Applications</span></small>
+                <i class="bi bi-chevron-compact-down ms-auto"></i>
+            </a>
+            <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="/">
+                        <i class="bi bi-ban"></i><small><span>Passed and Failed Applicants</span></small>
+                    </a>
+                </li>
+            </ul>
+        </li><!-- End Icons Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#responses-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-passport"></i>
+                <small> <span>Responses</span></small>
+                <i class="bi bi-chevron-compact-down ms-auto"></i>
+            </a>
+            <ul id="responses-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="/">
+                        <i class="bi bi-question-diamond"></i><small><span>Respond To Client</span></small>
+                    </a>
+                </li>
+                <li>
+                    <a href="/">
+                        <i class="bi bi-patch-check-fill"></i><small><span>Responses Made</span></small>
+                    </a>
+                </li>
+            </ul>
+        </li><!-- End Icons Nav -->
+    </ul>
+
+</aside><!-- End Sidebar-->
+
+<main id="main" class="main">
+
+    <div class="col-12">
+        <div class="container overflow-auto">
+                <div class="card-body">
+                    <h5 class="card-title">Application in Database <span> | Read Through and Confirm Eligibility </span> </h5>
+                    <div class="container col-md-10 edit_box">
+
+                        <div class="card text-center" style="max-width">
+                            <div class="card-header text-white bg-secondary mb-3">Respond to Application</div>
+                            <div class="card-body card bg-light mb-3">
+
+
+                        <!-- Main form -->
+                        <form method="POST" id="editForm">
+
+                            {% csrf_token %}
+
+                            {% for field in form %}
+                            <div class="form-group row " style="width:100%">
+                                <div class="card">
+                                <div class="card-body " >
+                                <label for="id_{{ field.name }}" class="col-sm-6 form-label">{{ field.label }}</label>
+                                <div class="justify-content-center">
+                                    {{ field }}
+                                </div>
+                                    </div>
+                                    </div>
+                            </div>
+                            {% endfor %}
+
+                            <div class="form-group row">
+                                <div class=" justify-content-center "><br>
+                                    <!-- Button to show the confirmation modal -->
+                                  <button type="button" class="btn btn-primary" onclick="showConfirmationModal()">
+                                        Modify
+                                    </button>
+                                </div>
+                            </div>
+                        </form><!-- End of Main form -->
+                                <!--End Card Form divs-->
+                            </div>
+                        </div>
+                        <!-- Confirmation Modal -->
+                        <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog"
+                             aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to modify the data?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <!-- Button to submit the form after confirmation -->
+                                        <button type="button" class="btn btn-primary" onclick="submitForm()">Yes,
+                                            Modify
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- End of Confirmation Modal -->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+ {% else %}
+
+            <div class="pagetitle">
+       <h1>CRM System</h1>
+        <nav>
+            <ol class="breadcrumb"> login to access the system
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+          <section class="section align-items-center justify-content-center py-4">
+        <div class="container">
+          <div class="row justify-content-center ">
+            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+    <img src="{% static 'img/german_logo_new.png' %}" alt="">
+     <h6><span><br>To Sign in <a href="login">Click here </a></span></h6>
+    <p>Contact the administrator in case <br> any resource is not available.</p>
+                    </div>
+          </div>
+        </div>
+
+      </section>
+    {% endif %}
+</main><!-- End #main -->
+
+
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
+
+<!-- Vendor JS Files -->
+<script src="{% static 'vendor/apexcharts/apexcharts.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/chart.js' %}/chart.umd.js' %}"></script>
+<script src="{% static 'vendor/echarts/echarts.min.js' %}"></script>
+<script src="{% static 'vendor/quill/quill.min.js' %}"></script>
+<script src="{% static 'vendor/simple-datatables/simple-datatables.js' %}"></script>
+<script src="{% static 'vendor/tinymce/tinymce.min.js' %}"></script>
+<script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+
+<!-- Template Main JS File -->
+<script src="{% static '/js/main.js' %}"></script>
+
+<!-- Bootstrap JavaScript and Popper.js -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"
+        integrity="sha384-b1HvOu9Rm7aLACqDtvKc7z9fH5ULFbl7hJ8ePJi6HHddFZaPjvI1D21hFfMfoejb"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wy4z77wpi1jWKXK+2XYnXs6WlsO8g1L2tw"
+        crossorigin="anonymous"></script>
+
+<!-- modal script -->
+<script>
+    // Function to show the confirmation modal
+    function showConfirmationModal() {
+        $('#confirmationModal').modal('show');
+    }
+
+    // Function to submit the form after confirmation
+    function submitForm() {
+        $('#editForm').submit();
+    }
+</script>
+</body>
+
+</html>
