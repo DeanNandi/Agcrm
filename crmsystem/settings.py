@@ -9,57 +9,28 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+from pathlib import Path
 import os
 from dotenv import load_dotenv
 from crmpage.services import initialize_gspread
-import environ
-from urllib.parse import urlparse
-from pathlib import Path
-import io
-from google.cloud import secretmanager
-load_dotenv()
-env = environ.Env(DEBUG=(bool, False))
-APPENGINE_URL = env("APPENGINE_URL", default=None)
-if APPENGINE_URL:
-    # Ensure a scheme is present in the URL before it's processed.
-    if not urlparse(APPENGINE_URL).scheme:
-        APPENGINE_URL = f"https://{APPENGINE_URL}"
 
-    ALLOWED_HOSTS = [urlparse(APPENGINE_URL).netloc]
-    CSRF_TRUSTED_ORIGINS = [APPENGINE_URL]
-    SECURE_SSL_REDIRECT = True
-else:
-    ALLOWED_HOSTS = ["*"]
+
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-env = environ.Env(DEBUG=(bool, False))
-env_file = os.path.join(BASE_DIR, '.env')
-env.read_env(env_file)
-if os.path.isfile(env_file):
-    # read a local .env file
-    env.read_env(env_file)
-elif os.environ.get('GOOGLE_CLOUD_PROJECT', None):
-    # pull .env file from Secret Manager
-    project_id = os.environ.get('GOOGLE_CLOUD_PROJECT')
 
-    client = secretmanager.SecretManagerServiceClient()
-    settings_name = os.environ.get('SETTINGS_NAME', 'django_settings')
-    name = f'projects/{project_id}/secrets/{settings_name}/versions/latest'
-    payload = client.access_secret_version(name=name).payload.data.decode('UTF-8')
-
-    env.read_env(io.StringIO(payload))
-else:
-    raise Exception('No local .env or GOOGLE_CLOUD_PROJECT detected. No secrets found.')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = 'django-insecure-*^cv^_cmrvobr!yfo^n3o7g46t+*!7vk)*-1gww364b57g@_=t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = True
+
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -116,8 +87,16 @@ WSGI_APPLICATION = 'crmsystem.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {'default': env.db()}
-
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'Institute_db',
+        'USER': 'postgres',
+        'PASSWORD': 'dean45114',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
