@@ -1,24 +1,129 @@
 from django.db import models
 from multiselectfield import MultiSelectField
-
-YES_or_NO = (
-    ('Pending', 'Pending'),
-    ('Yes', 'Yes'),
-    ('No', 'No')
-)
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+import os
+import uuid
 
 
-class School(models.Model):
-    course_class_no = models.CharField(max_length=255)
-    course_intake = models.CharField(max_length=255)
-    lec_first_name = models.CharField(max_length=255)
-    lec_last_name = models.CharField(max_length=255)
-    lec_phone_number = models.CharField(max_length=50, blank=True, null=True, unique=True)
-    lec_email_address = models.EmailField(max_length=70, blank=True, null=True, unique=True)
-    lec_class_name = models.CharField(max_length=255)
+class Invoice(models.Model):
+    # Your existing fields...
+    Name = models.CharField(max_length=255)
+    Street = models.CharField(max_length=255)
+    City = models.CharField(max_length=255)
+    Phonenumber = models.CharField(max_length=20)
+    Invoice_Number = models.CharField(max_length=36, unique=True, default=uuid.uuid4, editable=False)
+    Date_of_Payment = models.DateField()
+    AmountPaid = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
-    def __str__(self):
-        return f"{self.course_class_no} {self.course_intake}"
+    def convert_to_str(self, amount):
+        return f"{amount} KES"
+
+    def netto(self, amount, mwst=0.19):
+        return round(amount * (1 / (1 + mwst)), 2)
+
+    def create_pdf_from_data(self, amount_paid=None):
+        # Specify the base directory to save PDFs
+        base_dir = 'path/to/save/'
+
+        # Ensure the base directory exists, create it if necessary
+        os.makedirs(base_dir, exist_ok=True)
+
+        # Construct the full path for the PDF file
+        pdf_path = os.path.join(base_dir, f'{self.Name}_{self.Invoice_Number}.pdf')
+
+        # Example: Use ReportLab to generate a more detailed PDF
+        pdf = canvas.Canvas(pdf_path, pagesize=letter)
+
+        # Set font and font size
+        pdf.setFont("Helvetica", 12)
+
+        # Company details
+        pdf.drawString(100, 770, "AG German School Ltd.")
+        pdf.drawString(100, 755, "Ambank House")
+        pdf.drawString(100, 740, "00100 CBD, Nairobi")
+
+        # Load and draw the image
+        logo_path = 'C:/Users/deann/PycharmProjects/agCrm/crmpage/static/img/AG_German_Institute.png'
+        image_width = 100
+        image_height = 50
+        image_x = 400
+        image_y = 750
+        pdf.drawImage(logo_path, image_x, image_y, width=image_width, height=image_height, preserveAspectRatio=True)
+
+        # Invoice title
+        pdf.setFont("Helvetica-Bold", 14)
+        pdf.drawString(100, 720, f"Receipt for {self.Date_of_Payment.strftime('%B, %Y')}")
+        pdf.line(100, 715, 500, 715)  # Horizontal line
+
+        # Invoice details
+        invoice_details_x = 400
+        pdf.setFont("Helvetica", 10)
+        pdf.drawString(invoice_details_x, 700, f"Receipt for: {self.Name}")
+        pdf.drawString(invoice_details_x, 685, f"Address: {self.City}")
+        pdf.drawString(invoice_details_x, 670, f"Phone Number: {self.Phonenumber}")
+        pdf.drawString(invoice_details_x, 655, f"Receipt Number: {self.Invoice_Number}")
+        pdf.drawString(invoice_details_x, 640, f"Date of Payment: {self.Date_of_Payment.strftime('%Y-%m-%d')}")
+
+        # Description of services and costs
+        pdf.setFont("Helvetica-Bold", 12)
+        pdf.drawString(100, 620, "Description of services Costs")
+        pdf.line(100, 615, 500, 615)  # Horizontal line
+
+        # Example: Calculate total amount
+        total_amount = self.AmountPaid if self.AmountPaid is not None else 15000
+
+        # Add more content as needed
+        pdf.setFont("Helvetica", 10, leading=12)
+        pdf.drawString(100, 600, "Monthly Tuition for AG German Institute")
+        pdf.drawString(100, 585,
+                       f"Includes all course materials and classes for {self.Date_of_Payment.strftime('%m/%Y')}")
+        pdf.drawString(400, 600, f"{self.convert_to_str(amount_paid)}")  # Updated line with dynamic amount_paid
+
+        # Total
+        pdf.setFont("Helvetica-Bold", 12)
+        pdf.drawString(100, 570, "Total")
+        pdf.line(100, 560, 500, 560)  # Horizontal line
+
+        # Draw the top separator line
+        pdf.line(100, 565, 500, 565)
+
+        # Calculate the width of the total amount text
+        total_text = f"Total {self.convert_to_str(amount_paid)}"
+        text_width = pdf.stringWidth(total_text, "Helvetica-Bold", 12)
+
+        # Calculate the position to center the text
+        center_x = 400
+
+        # Draw the total amount text
+        pdf.drawString(center_x, 545, total_text)
+
+        # Draw the bottom separator line
+        pdf.line(100, 540, 500, 540)
+
+        # Center align the additional information
+        center_x = 300  # Adjust as needed
+        additional_info_y = 510
+        line_height = 12  # Adjust the line height
+
+        pdf.setFont("Helvetica", 10)
+
+        # Akodgan Glaszner German School Ltd. - Ambank House - 00100 CBD, Nairobi
+        text = "Akodgan Glaszner German School Ltd. - Ambank House - 00100 CBD, Nairobi"
+        text_width = pdf.stringWidth(text, "Helvetica", 10)
+        pdf.drawString(center_x - text_width / 2, additional_info_y, text)
+        additional_info_y -= line_height
+
+        # +254 110853 892 - info@germaninstitute.co.ke - www.germaninstitute.co.ke
+        text = "+254 110853 892 - info@germaninstitute.co.ke - www.germaninstitute.co.ke"
+        text_width = pdf.stringWidth(text, "Helvetica", 10)
+        pdf.drawString(center_x - text_width / 2, additional_info_y, text)
+        additional_info_y -= line_height
+
+        # Save the PDF
+        pdf.save()
+
+        return pdf_path
 
 
 class Student(models.Model):
@@ -31,18 +136,6 @@ class Student(models.Model):
 
     def __str__(self):
         return f"{self.student_first_name} {self.student_second_name}"
-
-
-class Attendance(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    school = models.ForeignKey(School, on_delete=models.CASCADE)
-    date_of_class = models.DateField(max_length=50, blank=True, null=True)
-    start_time = models.TimeField(max_length=50, blank=True, null=True)
-    end_time = models.TimeField(max_length=50, blank=True, null=True)
-    absent = models.CharField(max_length=50, null=True, choices=YES_or_NO, default='Pending')
-
-    def __str__(self):
-        return f"{self.student} {self.school}"
 
 
 SEX = (
@@ -63,9 +156,8 @@ REPLY = (
 )
 
 RESULTS = (
-    ('Pending', 'Pending'),
-    ('Passed', 'Passed'),
-    ('Failed', 'Failed')
+    ('Paid', 'Paid'),
+    ('Not-Paid', 'Not-Paid')
 )
 
 DAYS = (
@@ -170,6 +262,8 @@ ADDRESS = (
 )
 COHORT = (
     ('Class (DEC-AUG 2023/2024 Semester)', 'Class (DEC-AUG 2023/2024 Semester)'),
+    ('Class (JAN-SEPT 2024 Semester)', 'Class (JAN-SEPT 2024 Semester)'),
+
 )
 
 QUALIFICATION = (
@@ -190,7 +284,7 @@ class Candidate(models.Model):
     Sex = models.CharField(max_length=50, null=True, choices=SEX, default='None')
     Address = models.CharField(max_length=100, null=True, choices=ADDRESS, default='Other')
     # cohorts
-    course_intake = models.CharField(max_length=255, choices=COHORT, null=True)
+    course_intake = models.CharField(max_length=255, choices=COHORT, blank=True, null=True)
     # image candidate
     photo = models.ImageField(upload_to='candidate_photos/', null=True, blank=True)
     Street_Address = models.CharField(max_length=512, blank=True, null=True)
@@ -221,73 +315,128 @@ class Candidate(models.Model):
     Qualification = models.CharField(max_length=255, choices=QUALIFICATION, null=True)
     # end of it
     High_School_name = models.CharField(max_length=512, blank=True, null=True)
-    High_School_Year_start = models.IntegerField(max_length=4, blank=True, null=True)
+    High_School_Year_start = models.CharField(max_length=4, blank=True, null=True)
     High_School_grade = models.CharField(max_length=3, blank=True, null=True)
-    High_School_Year = models.IntegerField(max_length=4, blank=True, null=True)
+    High_School_Year = models.CharField(max_length=4, blank=True, null=True)
     High_School_file = models.FileField(blank=True, null=True)
+    # Uni one
     University_Name = models.CharField(max_length=512, blank=True, null=True)
     Degree = models.CharField(max_length=512, blank=True, null=True)
     GPA = models.CharField(max_length=10, blank=True, null=True)
-    University_Year_start = models.IntegerField(max_length=4, blank=True, null=True)
-    University_Year = models.IntegerField(max_length=4, blank=True, null=True)
+    University_Year_start = models.CharField(max_length=4, blank=True, null=True)
+    University_Year = models.CharField(max_length=4, blank=True, null=True)
     University_file = models.FileField(blank=True, null=True)
+    # uni two
     University_Name_secondary = models.CharField(max_length=512, blank=True, null=True)
     Degree_secondary = models.CharField(max_length=100, blank=True, null=True)
     GPA_secondary = models.CharField(max_length=10, blank=True, null=True)
-    University_secondary_Year_start = models.IntegerField(max_length=4, blank=True, null=True)
-    University_Year_secondary = models.IntegerField(max_length=4, blank=True, null=True)
+    University_secondary_Year_start = models.CharField(max_length=4, blank=True, null=True)
+    University_Year_secondary = models.CharField(max_length=4, blank=True, null=True)
     University_secondary_file = models.FileField(blank=True, null=True)
+    # uni three
     University_Name_tertiary = models.CharField(max_length=512, blank=True, null=True)
-    University_tertiary_Year_start = models.IntegerField(max_length=4, blank=True, null=True)
+    University_tertiary_Year_start = models.CharField(max_length=4, blank=True, null=True)
     Degree_tertiary = models.CharField(max_length=100, blank=True, null=True)
     GPA_tertiary = models.CharField(max_length=10, blank=True, null=True)
-    University_Year_tertiary = models.IntegerField(max_length=4, blank=True, null=True)
+    University_Year_tertiary = models.CharField(max_length=4, blank=True, null=True)
     University_tertiary_file = models.FileField(blank=True, null=True)
+    # college one
     College_Name = models.CharField(max_length=512, blank=True, null=True)
-    College_Degree_Year_start = models.IntegerField(max_length=4, blank=True, null=True)
+    College_Degree_Year_start = models.CharField(max_length=4, blank=True, null=True)
     College_Degree = models.CharField(max_length=100, blank=True, null=True)
     College_GPA = models.CharField(max_length=10, blank=True, null=True)
-    College_Year = models.IntegerField(max_length=4, blank=True, null=True)
+    College_Year = models.CharField(max_length=4, blank=True, null=True)
     College_Degree_file = models.FileField(blank=True, null=True)
+    # college two
     College_Name_secondary = models.CharField(max_length=512, blank=True, null=True)
-    College_Degree_secondary_Year_start = models.IntegerField(max_length=4, blank=True, null=True)
+    College_Degree_secondary_Year_start = models.CharField(max_length=4, blank=True, null=True)
     College_Degree_secondary = models.CharField(max_length=100, blank=True, null=True)
     College_GPA_secondary = models.CharField(max_length=10, blank=True, null=True)
-    College_Year_Secondary = models.IntegerField(max_length=4, blank=True, null=True)
+    College_Year_Secondary = models.CharField(max_length=4, blank=True, null=True)
     College_Degree_secondary_file = models.FileField(blank=True, null=True)
+    # college three
     College_Name_tertiary = models.CharField(max_length=512, blank=True, null=True)
-    College_tertiary_Year_start = models.IntegerField(max_length=4, blank=True, null=True)
+    College_tertiary_Year_start = models.CharField(max_length=4, blank=True, null=True)
     College_Degree_tertiary = models.CharField(max_length=100, blank=True, null=True)
     College_GPA_tertiary = models.CharField(max_length=10, blank=True, null=True)
-    College_Year_tertiary = models.IntegerField(max_length=4, blank=True, null=True)
+    College_Year_tertiary = models.CharField(max_length=4, blank=True, null=True)
     College_tertiary_file = models.FileField(blank=True, null=True)
+    # Institution one
     Institution_name = models.CharField(max_length=512, blank=True, null=True)
     Ward_name = models.CharField(max_length=512, blank=True, null=True)
     Hours_worked = models.CharField(max_length=512, blank=True, null=True)
-    Institution_Year_start = models.IntegerField(max_length=4, blank=True, null=True)
-    Institution_Year_end = models.IntegerField(max_length=4, blank=True, null=True)
+    Institution_Year_start = models.CharField(max_length=4, blank=True, null=True)
+    Institution_Year_end = models.CharField(max_length=4, blank=True, null=True)
     Institution_file = models.FileField(blank=True, null=True)
+    # Institution two
     Institution_name_secondary = models.CharField(max_length=512, blank=True, null=True)
     Ward_name_secondary = models.CharField(max_length=512, blank=True, null=True)
     Hours_worked_secondary = models.CharField(max_length=512, blank=True, null=True)
-    Institution_secondary_Year_start = models.IntegerField(max_length=4, blank=True, null=True)
-    Institution_secondary_Year_end = models.IntegerField(max_length=4, blank=True, null=True)
+    Institution_secondary_Year_start = models.CharField(max_length=4, blank=True, null=True)
+    Institution_secondary_Year_end = models.CharField(max_length=4, blank=True, null=True)
     Institution_file_secondary = models.FileField(blank=True, null=True)
+    # Institution three
     Institution_name_tertiary = models.CharField(max_length=512, blank=True, null=True)
     Ward_name_tertiary = models.CharField(max_length=512, blank=True, null=True)
     Hours_worked_tertiary = models.CharField(max_length=512, blank=True, null=True)
-    Institution_tertiary_Year_end = models.IntegerField(max_length=4, blank=True, null=True)
-    Institution_tertiary_Year_start = models.IntegerField(max_length=4, blank=True, null=True)
+    Institution_tertiary_Year_end = models.CharField(max_length=4, blank=True, null=True)
+    Institution_tertiary_Year_start = models.CharField(max_length=4, blank=True, null=True)
     Institution_file_tertiary = models.FileField(blank=True, null=True)
     # updated location
     Course_Location = models.CharField(max_length=50, choices=COURSE_LOCATION, null=True, )
     # end
     Days = MultiSelectField(max_length=50, choices=DAYS)
     Time = models.CharField(max_length=50, null=True, choices=TIME, default='None')
-    Results = models.CharField(max_length=50, blank=True, null=True, choices=RESULTS, default='Pending')
+    Results = models.CharField(max_length=50, blank=True, null=True, choices=RESULTS, default='Not-Paid')
     Schedule_Interview_date = models.DateField(max_length=50, blank=True, null=True)
     Schedule_Interview_time = models.TimeField(max_length=50, blank=True, null=True)
+    admission_number = models.CharField(max_length=6, unique=True, blank=True, null=True)
 
+    def __str__(self):
+        return f"{self.First_Name} {self.Last_Name}"
+
+
+class Teacher(models.Model):
+    lec_first_name = models.CharField(max_length=255)
+    lec_last_name = models.CharField(max_length=255)
+    course_class_no = models.CharField(max_length=255)
+    course_intake = models.CharField(max_length=255)
+    lec_phone_number = models.CharField(max_length=50, blank=True, null=True, unique=True)
+    lec_email_address = models.EmailField(max_length=70, blank=True, null=True, unique=True)
+    lec_class_name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{self.lec_first_name} {self.lec_last_name}"
+
+
+
+class Attendance(models.Model):
+    candidates = models.ManyToManyField('Candidate', related_name='attendances')
+    date_of_class = models.DateField(blank=True, null=True)
+    is_present = models.BooleanField(default=False)
+    is_absent = models.BooleanField(default=False)
+    is_late = models.BooleanField(default=False)
+    absent_reason = models.CharField(max_length=255, blank=True, null=True)
+    teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE, related_name='attendances')
+
+    def __str__(self):
+        return f"{self.candidates} - {self.teacher} - {self.date_of_class}"
+
+
+
+class Contract(models.Model):
+    candidate = models.OneToOneField(Candidate, on_delete=models.CASCADE, related_name='contract')
+    signed_contract = models.FileField(upload_to='signed_contracts/', null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.candidate} {self.signed_contract}"
+
+
+YES_or_NO = (
+    ('Pending', 'Pending'),
+    ('Yes', 'Yes'),
+    ('No', 'No')
+)
 
 SITUATION = (
     ('Pending', 'Pending'),
@@ -365,6 +514,3 @@ class Application(models.Model):
     license_number = models.CharField(max_length=512, blank=True, null=True)
     Reply = models.CharField(max_length=50, null=True, choices=ELIGIBILITY, default='Pending')
     sheet2application = models.ForeignKey(Sheet2Application, on_delete=models.CASCADE, null=True, blank=True)
-
-
-

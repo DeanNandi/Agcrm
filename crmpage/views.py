@@ -1,25 +1,253 @@
-from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from .forms import CreateUserForm
-from .forms import MyForm, MyApplications, CandidateInfo, PostResults, AddCourse, AddStudent, AttendanceForm
+from .forms import MyForm, MyApplications, CandidateInfo, PostResults, AddCourse, AddStudent
 from oauth2client.service_account import ServiceAccountCredentials
-from django.http import HttpResponse
 import gspread
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from django.forms import modelformset_factory
 from django.utils import timezone
 from xhtml2pdf import pisa
 from io import BytesIO
 from django.template.loader import get_template
-from .models import Student, School
+from .models import Student, Teacher
 from datetime import timedelta
-from django.shortcuts import render
 import requests
 import json
-from .models import Response, Candidate, Attendance, Sheet2Application, Application
+from .models import Response, Sheet2Application, Application
 from django.http import HttpResponseBadRequest
 from .forms import EditApps, EditSheet2App
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from .forms import YourInvoiceForm
+from .models import Invoice, Contract
+from .forms import ContractUploadForm
+from django.shortcuts import render, redirect
+from django.forms import modelformset_factory
+from .models import Candidate, Attendance
+from .forms import AttendanceForm
+import uuid
+from django.db.models import Max
+from django.forms import formset_factory
+
+
+def generate_admission_numbers():
+    candidates = Candidate.objects.all()
+
+    for candidate in candidates:
+        if not candidate.admission_number:
+            # Generate a unique 6-digit admission number
+            max_admission_number = Candidate.objects.aggregate(Max('admission_number'))['admission_number__max']
+            new_admission_number = int(max_admission_number or 0) + 1
+            candidate.admission_number = f"{new_admission_number:06d}"
+            candidate.save()
+
+
+# Run the function
+generate_admission_numbers()
+
+
+def get_weekday_range(start_date, end_date):
+    weekdays = []
+    current_date = start_date
+    while current_date <= end_date:
+        if current_date.weekday() < 5:  # Exclude weekends (0-4 represent Monday to Friday)
+            weekdays.append(current_date)
+        current_date += timedelta(days=1)
+    return weekdays
+
+
+def getPdfPage(request):
+    today = timezone.now()
+    candidates = Candidate.objects.all()
+    teacher = Teacher.objects.all()
+
+    # Set the date range for the next 10 weekdays
+    start_date = today.date()  # Use only the date part
+    end_date = start_date + timedelta(days=15)
+    weekdays_range = get_weekday_range(start_date, end_date)
+
+    data = {'candidates': candidates, 'teacher': teacher, 'today': today, 'weekdays_range': weekdays_range}
+    template = get_template('pdf_page.html')
+    data_p = template.render(data)
+    response = BytesIO()
+
+    pdfPage = pisa.pisaDocument(BytesIO(data_p.encode("UTF-8")), response)
+    if not pdfPage.err:
+        return HttpResponse(response.getvalue(), content_type="application/pdf")
+    else:
+        return HttpResponse("Error Generating PDF")
+
+def record_attendance(request, candidate_id):
+    candidate = get_object_or_404(Candidate, id=candidate_id)
+
+    if request.method == 'POST':
+        form = AttendanceForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.candidate = candidate
+            instance.teacher = candidate.teachers.first()  # Adjust this logic based on your requirements
+            instance.save()
+            return redirect('course_view')
+
+    else:
+        form = AttendanceForm()
+
+    context = {
+        'form': form,
+        'candidate': candidate,
+    }
+
+    return render(request, 'record_attendance.html', context)
+
+
+def course_view(request):
+    candidates = Candidate.objects.all()
+    teachers = Teacher.objects.all()
+
+    if request.method == 'POST':
+        for candidate in candidates:
+            form = AttendanceForm(request.POST, prefix=str(candidate.id))
+            if form.is_valid():
+                instance = form.save(commit=False)
+                instance.candidates.add(candidate)
+                instance.teacher = candidate.teacher  # Set the teacher from the candidate
+                instance.save()
+
+        return redirect('/')  # Redirect to a success page or another view
+
+    context = {
+        'candidates': candidates,
+        'teachers': teachers,
+    }
+
+    return render(request, 'course_view.html', context)
+
+
+def attendance_details(request, candidate_id):
+    candidate = get_object_or_404(Candidate, id=candidate_id)
+    teachers = Teacher.objects.all()
+    attendances = Attendance.objects.filter(candidates=candidate)  # Use the candidates field
+
+    context = {
+        'candidate': candidate,
+        'teachers': teachers,
+        'attendances': attendances,
+    }
+
+    return render(request, 'attendance_details.html', context)
+
+def candidate_detail(request, candidate_id):
+    candidate = Candidate.objects.get(pk=candidate_id)
+    contract = candidate.contract if hasattr(candidate, 'contract') else None
+    return render(request, 'candidate_detail.html', {'candidate': candidate, 'contract': contract})
+
+
+def candidate_list(request, candidate_id=None):
+    if candidate_id is not None:
+        try:
+            candidate = Candidate.objects.get(pk=candidate_id)
+        except Candidate.DoesNotExist:
+            # Handle the case where the candidate with the given ID does not exist
+            candidate = None
+    else:
+        candidate = None
+    contract = candidate.contract if hasattr(candidate, 'contract') else None
+    # Fetch unique values for each filter from the database
+    unique_course_locations = Candidate.objects.values_list('Course_Location', flat=True).distinct()
+    unique_qualifications = Candidate.objects.values_list('Qualification', flat=True).distinct()
+    unique_addresses = Candidate.objects.values_list('Address', flat=True).distinct()
+    unique_cohorts = Candidate.objects.values_list('course_intake', flat=True).distinct()
+
+    # Get selected filter values from the request
+    selected_course_location = request.GET.get('course_location')
+    selected_qualification = request.GET.get('qualification')
+    selected_address = request.GET.get('address')
+    selected_cohort = request.GET.get('cohort')
+
+    # Filter candidates based on the selected filter values
+    candidates = Candidate.objects.all()
+
+    if selected_course_location:
+        candidates = candidates.filter(Course_Location=selected_course_location)
+
+    if selected_qualification:
+        candidates = candidates.filter(Qualification=selected_qualification)
+
+    if selected_address:
+        candidates = candidates.filter(Address=selected_address)
+
+    if selected_cohort:
+        candidates = candidates.filter(course_intake=selected_cohort)
+
+    return render(request, 'candidate_list.html', {
+        'candidates': candidates,
+        'unique_course_locations': unique_course_locations,
+        'unique_qualifications': unique_qualifications,
+        'unique_addresses': unique_addresses,
+        'unique_cohorts': unique_cohorts,
+        'selected_course_location': selected_course_location,
+        'selected_qualification': selected_qualification,
+        'selected_address': selected_address,
+        'selected_cohort': selected_cohort,
+        'contract': contract,
+        'candidate': candidate,
+    })
+
+
+def upload_contract(request, candidate_id):
+    candidate = get_object_or_404(Candidate, id=candidate_id)
+    contract, created = Contract.objects.get_or_create(candidate=candidate)
+
+    if request.method == 'POST':
+        form = ContractUploadForm(request.POST, request.FILES, instance=contract)
+        if form.is_valid():
+            form.save()
+            return redirect('/candidates/', pk=candidate_id)  # Use the correct URL name and parameter
+    else:
+        form = ContractUploadForm(instance=contract)
+
+    return render(request, 'candidate_detail.html', {'form': form, 'candidate': candidate})
+
+
+def generate_invoice(request, candidate_id):
+    candidate = get_object_or_404(Candidate, pk=candidate_id)
+
+    if request.method == 'POST':
+        form = YourInvoiceForm(request.POST)
+        if form.is_valid():
+            name = f"{candidate.First_Name} {candidate.Last_Name}"
+            street = candidate.Street_Address if candidate.Street_Address else ""
+            city = candidate.Address
+            phonenumber = candidate.phone_number
+
+            # Generate a unique receipt number using UUID
+            invoice_number = str(uuid.uuid4().hex)[:12]
+
+            date_of_payment = form.cleaned_data['Date_of_Payment']
+
+            # Create an instance of the Invoice class
+            invoice = Invoice()
+            # Set the fields with the extracted data
+            invoice.Name = name
+            invoice.Street = street
+            invoice.City = city
+            invoice.Phonenumber = phonenumber
+            invoice.Invoice_Number = invoice_number  # Set the generated receipt number
+            invoice.Date_of_Payment = date_of_payment
+
+            pdf_path = invoice.create_pdf_from_data(amount_paid=form.cleaned_data['AmountPaid'])
+
+            with open(pdf_path, 'rb') as pdf_file:
+                response = HttpResponse(pdf_file.read(), content_type='application/pdf')
+                response['Content-Disposition'] = f'inline; filename="{name}_{invoice_number}.pdf"'
+                return response
+
+    else:
+        form = YourInvoiceForm()
+
+    return render(request, 'generate_invoice.html', {'form': form})
+
+
 def apps_edit(request, pk, model_type):
     if model_type == 'application':
         model = Application
@@ -41,6 +269,7 @@ def apps_edit(request, pk, model_type):
         form = form_class(instance=item)
 
     return render(request, 'edit_data.html', {'form': form})
+
 
 def update_database(request):
     # Set up Google Sheets API credentials
@@ -145,6 +374,8 @@ def update_sheet2_database(request):
 
 def model(request):
     return render(request, 'model.html', {})
+
+
 def rejected(request):
     sheet2 = Sheet2Application.objects.all()
     data = Application.objects.all()
@@ -153,6 +384,7 @@ def rejected(request):
 
     return render(request, 'rejected.html', context)
 
+
 def later_on(request):
     sheet2 = Sheet2Application.objects.all()
     data = Application.objects.all()
@@ -160,6 +392,7 @@ def later_on(request):
     context = {'data': data, 'sheet2': sheet2}
 
     return render(request, 'not_now.html', context)
+
 
 def applications(request):
     filter_sheet2 = request.GET.get('filter_sheet2')
@@ -205,84 +438,6 @@ def mpesa(request):
     return render(request, 'mpesa.html', {'data': data})
 
 
-def get_weekday_range(start_date, end_date):
-    weekdays = []
-    current_date = start_date
-    while current_date <= end_date:
-        if current_date.weekday() < 5:  # Exclude weekends (0-4 represent Monday to Friday)
-            weekdays.append(current_date)
-        current_date += timedelta(days=1)
-    return weekdays
-
-
-def getPdfPage(request):
-    today = timezone.now()
-    all_students = Student.objects.all()
-    school = School.objects.all()
-
-    # Set the date range for the next 10 weekdays
-    start_date = today.date()  # Use only the date part
-    end_date = start_date + timedelta(days=15)
-    weekdays_range = get_weekday_range(start_date, end_date)
-
-    data = {'all_students': all_students, 'school': school, 'today': today, 'weekdays_range': weekdays_range}
-    template = get_template('pdf_page.html')
-    data_p = template.render(data)
-    response = BytesIO()
-
-    pdfPage = pisa.pisaDocument(BytesIO(data_p.encode("UTF-8")), response)
-    if not pdfPage.err:
-        return HttpResponse(response.getvalue(), content_type="application/pdf")
-    else:
-        return HttpResponse("Error Generating PDF")
-
-
-def candidate_list(request):
-    # Fetch unique values for each filter from the database
-    unique_course_locations = Candidate.objects.values_list('Course_Location', flat=True).distinct()
-    unique_qualifications = Candidate.objects.values_list('Qualification', flat=True).distinct()
-    unique_addresses = Candidate.objects.values_list('Address', flat=True).distinct()
-    unique_cohorts = Candidate.objects.values_list('course_intake', flat=True).distinct()
-
-    # Get selected filter values from the request
-    selected_course_location = request.GET.get('course_location')
-    selected_qualification = request.GET.get('qualification')
-    selected_address = request.GET.get('address')
-    selected_cohort = request.GET.get('cohort')
-
-    # Filter candidates based on the selected filter values
-    candidates = Candidate.objects.all()
-
-    if selected_course_location:
-        candidates = candidates.filter(Course_Location=selected_course_location)
-
-    if selected_qualification:
-        candidates = candidates.filter(Qualification=selected_qualification)
-
-    if selected_address:
-        candidates = candidates.filter(Address=selected_address)
-
-    if selected_cohort:
-        candidates = candidates.filter(course_intake=selected_cohort)
-
-    return render(request, 'candidate_list.html', {
-        'candidates': candidates,
-        'unique_course_locations': unique_course_locations,
-        'unique_qualifications': unique_qualifications,
-        'unique_addresses': unique_addresses,
-        'unique_cohorts': unique_cohorts,
-        'selected_course_location': selected_course_location,
-        'selected_qualification': selected_qualification,
-        'selected_address': selected_address,
-        'selected_cohort': selected_cohort,
-    })
-
-
-def candidate_detail(request, candidate_id):
-    candidate = Candidate.objects.get(pk=candidate_id)
-    return render(request, 'candidate_detail.html', {'candidate': candidate})
-
-
 def student(request):
     unique_course_locations = Candidate.objects.values_list('Course_Location', flat=True).distinct()
     unique_qualifications = Candidate.objects.values_list('Qualification', flat=True).distinct()
@@ -323,66 +478,31 @@ def student(request):
     })
 
 
-def CourseView(request):
-    school = School.objects.all()
-    all_students = Student.objects.all()
-    context = {'school': school, 'all_students': all_students}
-    return render(request, 'course_view.html', context)
-
-
 def index(request):
-    school = School.objects.all()
+    teacher = Teacher.objects.all()
     response = Response.objects.all()
     total_students = Candidate.objects.filter(Results="Passed").count()
     total_responses = Response.objects.filter(Situation="Pending").count()
     total_applications = Application.objects.count()
 
-    context = {'school': school, 'response': response, 'total_students': total_students,
+    context = {'teacher': teacher, 'response': response, 'total_students': total_students,
                'total_responses': total_responses, 'total_applications': total_applications}
     return render(request, 'index.html', context)
 
 
 def add_teacher(request):
-    TeacherFormSet = modelformset_factory(School, form=AddCourse, extra=1)
+    TeacherFormSet = modelformset_factory(Teacher, form=AddCourse, extra=1)
 
     if request.method == 'POST':
-        formset = TeacherFormSet(request.POST, queryset=School.objects.none())
+        formset = TeacherFormSet(request.POST, queryset=Teacher.objects.none())
         if formset.is_valid():
             formset.save()
             return redirect('/')  # Redirect to a success page or another view
 
     else:
-        formset = TeacherFormSet(queryset=School.objects.none())
+        formset = TeacherFormSet(queryset=Teacher.objects.none())
 
     return render(request, 'add_teacher.html', {'formset': formset})
-
-
-def record_attendance(request):
-    school = School.objects.get(id=1)
-    pupil = Student.objects.get(id=1)
-
-    AttendanceFormSet = modelformset_factory(Attendance, form=AttendanceForm, extra=1)
-
-    if request.method == 'POST':
-        formset = AttendanceFormSet(request.POST, queryset=Attendance.objects.none())
-        if formset.is_valid():
-            instances = formset.save(commit=False)
-            for instance in instances:
-                instance.school = school
-                instance.pupil = pupil
-                instance.save()
-            return redirect('course_view')  # Redirect to a success page or another view
-
-    else:
-        formset = AttendanceFormSet(queryset=Attendance.objects.none())
-
-    context = {
-        'formset': formset,
-        'school': school,
-        'pupil': pupil,
-    }
-
-    return render(request, 'record_attendance.html', context)
 
 
 def add_student_view(request):
@@ -448,13 +568,21 @@ def add_candidate(request):
 
 
 def add_applications(request):
+    thank_you_message = None
+
     if request.method == 'POST':
-        new_apps = MyApplications(request.POST)
-        if new_apps.is_valid():
-            new_apps.save()
+        candidate_info = CandidateInfo(request.POST, request.FILES)
+        if candidate_info.is_valid():
+            candidate_info.save()
+            thank_you_message = "Thank you for your submission! Do you want to make another submission?"
+            return render(request, 'add_applications.html', {'thank_you_message': thank_you_message})
+
     else:
-        new_apps = MyApplications()
-    return render(request, 'add_applications.html', {'new_apps': new_apps})
+        candidate_info = CandidateInfo()
+
+    context = {'candidate_info': candidate_info, 'thank_you_message': thank_you_message}
+
+    return render(request, 'add_applications.html', context)
 
 
 def my_form(request):

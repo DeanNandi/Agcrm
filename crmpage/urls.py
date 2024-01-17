@@ -11,8 +11,7 @@ urlpatterns = [
     path('applications', views.applications, name="applications"),
     path('add-teacher', views.add_teacher, name="add-teacher"),
     path('add-student', views.add_student_view, name="add-student"),
-    path('record-attendance/', views.record_attendance, name='record_attendance'),
-    path('course_view', views.CourseView, name="course_view"),
+    path('course_view', views.course_view, name="course_view"),
     path('class-pdf', views.getPdfPage, name="class-pdf"),
     path('crmpage/apps_edit/<int:pk>/<str:model_type>/', views.apps_edit, name='apps_edit'),  # Corrected path
     path('crmpage/sheet2_edit/<int:pk>/', views.apps_edit, {'model_type': 'sheet2application'}, name='sheet2_edit'),
@@ -30,4 +29,11 @@ urlpatterns = [
     path('model', views.model, name='model'),
     path('candidates/', views.candidate_list, name='candidate_list'),
     path('candidates/<int:candidate_id>/', views.candidate_detail, name='candidate_detail'),
+    path('generate_invoice/<int:candidate_id>/', views.generate_invoice, name='generate_invoice'),
+    path('candidates/<int:candidate_id>/upload_contract/', views.upload_contract, name='upload_contract'),
+    path('record-attendance/<int:candidate_id>/', views.record_attendance, name='record_attendance'),
+    path('record-attendance/', views.record_attendance, name='record_attendance'),
+    path('attendance-details/', views.attendance_details, name='attendance_details'),
+    path('attendance-details/<int:candidate_id>/', views.attendance_details, name='attendance_details'),
+
 ]

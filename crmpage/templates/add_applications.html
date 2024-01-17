@@ -1,11 +1,14 @@
+{% load crispy_forms_tags %}
 {% load static %}
+{% block content %}
+
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>AG-System </title>
+    <title>Application Form </title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -29,7 +32,9 @@
 
     <!-- Template Main CSS File -->
     <link href="{% static '/css/style.css' %}" rel="stylesheet">
-
+    <!--search form-->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 </head>
 
@@ -40,114 +45,347 @@
     <div class="d-flex align-items-center justify-content-between">
         <a href="/" class="logo d-flex align-items-center">
             <img src="{% static 'img/german_flag.png' %}" alt="">
-            <span class="d-none d-lg-block">AG System</span>
+            <span class="d-none d-lg-block">Apply & Register</span>
         </a>
         <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
 
 </header><!-- End Header -->
-{% if user.is_authenticated %}
+
 <!-- ======= Sidebar ======= -->
 <aside id="sidebar" class="sidebar">
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
-        <li class="nav-item">
-            <a class="nav-link " href="/">
-                <i class="bi bi-chevron-double-left"></i>
-                <span>Back Home</span>
-            </a>
+<li class="nav-item">
+    <a class="nav-link" href="https://www.germaninstitute.co.ke/">
+        <i class="bi bi-info-circle"></i>
+        <span>About Us</span>
+    </a>
+</li>
 
-        </li><!-- End Dashboard Nav -->
-
-        <li class="nav-heading">Reports</li>
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-ui-checks"></i>
-                <small> <span>Applications</span></small>
-                <i class="bi bi-chevron-compact-down ms-auto"></i>
-            </a>
-            <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="/">
-                        <i class="bi bi-ban"></i><small><span>Passed and Failed Applicants</span></small>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Icons Nav -->
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#responses-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-passport"></i>
-                <small> <span>Responses</span></small>
-                <i class="bi bi-chevron-compact-down ms-auto"></i>
-            </a>
-            <ul id="responses-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="/">
-                        <i class="bi bi-question-diamond"></i><small><span>Respond To Client</span></small>
-                    </a>
-                </li>
-                <li>
-                    <a href="/">
-                        <i class="bi bi-patch-check-fill"></i><small><span>Responses Made</span></small>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Icons Nav -->
     </ul>
-
 </aside><!-- End Sidebar-->
 
 <main id="main" class="main">
-    <div class="col-12">
-        <div class="container">
-            <div class="card recent-sales overflow-auto">
 
+    <div class="col-12">
+        <div class="container overflow-auto">
                 <div class="card-body">
-                    <h5 class="card-title">Application Form <span>| Physically Add Clients To System</span></h5>
+                    <h5 class="card-title">Application Form <span> | Provide All Requested Information If Possible </span> </h5>
                     <div class="container col-md-10 edit_box">
-                                        <div class="row gy-4 justify-content-center">
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="container">
-                            <form method="POST">
-                                <fieldset>
-                                    {% csrf_token %}
-                                    {{ new_apps.as_p }}
-                                    <button type="submit" class="btn btn-primary">POST</button>
-                                </fieldset>
-                            </form>
-                        </div>
-                    </div>
+                        <div class=" justify-content-center">
+                            <div class="form-group container">
+                                {% if thank_you_message %}
+                                <div class="alert alert-success">
+                                    {{ thank_you_message }}
+                                    <br>
+                                    <a href="{% url 'add-application' %}">Make Another Submission</a>
+                                </div>
+                                {% else %}
+
+                                    <form method="POST" enctype="multipart/form-data" class="mt-5" novalidate>
+                                        <fieldset>
+                                            {% if candidate_info.errors %}
+                                            <div class="alert alert-danger">
+                                                <strong>Error(s):</strong>
+                                                <ul>
+                                                    {% for error in candidate_info.errors %}
+                                                    <li>{{ error }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                            {% endif %}
+                                            {% csrf_token %}
+                                        <!--  Card 1-->
+                                            <div class="card border-dark p-3">
+                                                <span class="btn btn-secondary mb-4" style="cursor: default;">
+                                                    General Information
+                                                </span>
+                                            <div class="container">
+                                            <div class="row card-body">
+                                                <div class="col-xl">{{ candidate_info.First_Name|as_crispy_field }}</div>
+                                                <div class="col-xl">{{ candidate_info.Last_Name|as_crispy_field }} </div>
+                                                <div class="col-xl">{{ candidate_info.Date_of_Birth|as_crispy_field }} </div>
+                                                <div class="col-xl">{{ candidate_info.Sex|as_crispy_field }} </div>
+                                                <div class="col-6">{{candidate_info.photo|as_crispy_field }}</div>
+
+                                                <h5 class="card-title"><span>Address Information</span></h5>
+                                                <div>
+                                                  <div class="col-6">{{ candidate_info.Address|as_crispy_field }}</div>
+                                              </div>
+                                                <div>
+                                                    <a class="link collapsed" data-bs-target="#Respond-nav2001"
+                                                       data-bs-toggle="collapse" href="#">
+                                                        <button type="button" class="btn btn-secondary btn-sm">
+                                                            More Info
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                                <ul id="Respond-nav2001" class="nav-content collapse">
+                                                    <div class="row card-body">
+                                                        <div class="col-6">{{ candidate_info.Other_Address|as_crispy_field}}</div>
+                                                        <div class="col-6">{{ candidate_info.Zip_Address|as_crispy_field}}</div>
+                                                        <div class="col-6">{{ candidate_info.Street_Address|as_crispy_field}}</div>
+                                                    </div>
+                                                </ul>
+                                                <br>
+                                                <h5 class="card-title"><span>Language Proficiency</span></h5>
+                                                <div>
+                                                    <div class="row">
+                                                    <div class="col-6"> {{ candidate_info.Level_Of_German|as_crispy_field }} </div>
+                                                    <div class="col-6"> {{ candidate_info.german_file|as_crispy_field }} </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="row">
+                                                      <div class="col-6"> {{ candidate_info.fluency_in_language|as_crispy_field }} </div>
+                                                    <div class="col-6"> {{ candidate_info.english_file|as_crispy_field }} </div>
+                                                    </div>
+                                                </div>
+                                                <h5 class="card-title"><span>Family Status</span></h5>
+                                                <div class="col-6">{{ candidate_info.Spouse|as_crispy_field }}</div>
+                                                <div class="col-6"> {{ candidate_info.Spouse_Name|as_crispy_field }} </div>
+                                                <div class="col-6">{{ candidate_info.Children|as_crispy_field }}</div>
+
+                                                <div class="row card-body">
+                                                <div class="col-xl">{{ candidate_info.Child_name|as_crispy_field }}</div>
+                                                <div class="col-xl">{{ candidate_info.child_sex|as_crispy_field }}</div>
+                                                <div class="col-xl">{{ candidate_info.child_date_of_birth|as_crispy_field }}</div>
+                                                </div>
+                                                <div>
+                                                    <a class="link collapsed" data-bs-target="#Respond-nav201"
+                                                       data-bs-toggle="collapse" href="#">
+                                                        <button type="button" class="btn btn-secondary btn-sm">
+                                                            Add Child
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                                <ul id="Respond-nav201" class="nav-content collapse">
+                                                    <div class="row card-body">
+                                                        <div class="col-6">{{ candidate_info.Child_name2|as_crispy_field }}</div>
+                                                        <div class="col-6">{{ candidate_info.child_sex2|as_crispy_field }}</div>
+                                                        <div class="col-6">{{ candidate_info.child_date_of_birth2|as_crispy_field }}</div>
+                                                    </div>
+                                                </ul>
+                                            </div>
+                                            </div>
+                                            </div>
+
+                                                <!--card 2-->
+                                                <br>
+                                                <div class="card border-dark p-3">
+                                                    <span class="btn btn-secondary mb-4" style="cursor: default;">
+                                                    Contact Information
+                                                </span>
+                                                <div class="row card-body">
+                                                <div class="col-6">{{ candidate_info.phone_number|as_crispy_field }}</div>
+                                                    <div class="col-6">{{ candidate_info.email_address|as_crispy_field }}</div>
+                                                 <div>
+                                            <a class="link collapsed" data-bs-target="#Respond-nav2"
+                                               data-bs-toggle="collapse" href="#">
+                                                <button type="button" class="btn btn-secondary btn-sm">Add Phone Number & Email</button>
+                                            </a>
+                                            </div>
+                                                <ul id="Respond-nav2" class="nav-content collapse">
+                                                    <br>
+                                                    <div class="row card-body">
+                                                <div class="col-6">{{ candidate_info.secondary_phone_number|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.secondary_email_address|as_crispy_field }}</div>
+                                                    </div>
+                                                </ul>
+                                                    <br><br>
+
+                                                <div class="col-6">{{ candidate_info.emergency_contact|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.emergency_phone_number|as_crispy_field }}</div>
+                                                </div>
+                                                </div>
+                                            <br>
+
+                                        <div class="card border-dark p-3">
+                                                    <span class="btn btn-secondary mb-4" style="cursor: default;">
+                                                    Professional information
+                                                </span>
+                                            <div class="row card-body">
+                                                <div class="col-6">{{ candidate_info.Licence_No|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.Licence_file|as_crispy_field }}</div>
+                                            </div>
+                                            <h5 class="card-title"><span>High School Information</span></h5>
+                                            <div class="row card-body">
+
+                                                <div class="col-6">{{ candidate_info.High_School_name|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.High_School_grade|as_crispy_field }}</div>
+
+                                                 <div class="col-6">{{ candidate_info.High_School_Year_start|as_crispy_field }}</div>
+                                                 <div class="col-6">{{ candidate_info.High_School_Year|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.High_School_file|as_crispy_field }}</div>
+                                            </div>
+
+                                            <h5 class="card-title"><span>University Information</span></h5>
+                                            <div class="row card-body">
+                                                <div class="col-6">{{ candidate_info.University_Name|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.Degree|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.GPA|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.University_file|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.University_Year_start|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.University_Year|as_crispy_field }}</div>
+                                            </div>
+                                            <div>
+                                            <a class="link collapsed" data-bs-target="#Respond-nav4"
+                                               data-bs-toggle="collapse" href="#">
+                                                <button type="button" class="btn btn-secondary btn-sm">Add Degree</button>
+                                            </a>
+                                            </div>
+                                                <ul id="Respond-nav4" class="nav-content collapse">
+                                                <div class="row card-body">
+                                                <div class="col-6">{{ candidate_info.University_Name_secondary|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.Degree_secondary|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.GPA_secondary|as_crispy_field }}</div>
+                                                    <div class="col-6">{{ candidate_info.University_secondary_file|as_crispy_field }}</div>
+                                                    <div class="col-6">{{ candidate_info.University_secondary_Year_start|as_crispy_field }}</div>
+                                                    <div class="col-6">{{ candidate_info.University_Year_secondary|as_crispy_field }}</div>
+                                                    <div>
+                                            <a class="link collapsed" data-bs-target="#Respond-nav5"
+                                               data-bs-toggle="collapse" href="#">
+                                                <button type="button" class="btn btn-secondary btn-sm">Add Degree</button>
+                                            </a>
+                                            </div>
+                                                <ul id="Respond-nav5" class="nav-content collapse">
+                                                 <div class="row card-body">
+                                                <div class="col-6">{{ candidate_info.University_Name_tertiary|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.Degree_tertiary|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.GPA_tertiary|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.University_tertiary_file|as_crispy_field }}</div>
+                                                  <div class="col-6">{{ candidate_info.University_tertiary_Year_start|as_crispy_field }}</div>
+                                                 <div class="col-6">{{ candidate_info.University_Year_tertiary|as_crispy_field }}</div>
+
+
+                                                </div>
+                                                </ul>
+                                                </div>
+                                                </ul>
+                                            <br>
+                                            <h5 class="card-title"><span>College Information</span></h5>
+                                            <div class="row card-body">
+                                                <div class="col-6">{{ candidate_info.College_Name|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.College_Degree|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.College_GPA|as_crispy_field }}</div>
+                                                    <div class="col-6">{{ candidate_info.College_Degree_file|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.College_Year|as_crispy_field }}</div>
+                                                 <div class="col-6">{{ candidate_info.College_Degree_Year_start|as_crispy_field }}</div>
+
+
+                                            </div>
+                                            <div>
+                                            <a class="link collapsed" data-bs-target="#Respond-nav9"
+                                               data-bs-toggle="collapse" href="#">
+                                                <button type="button" class="btn btn-secondary btn-sm">Add Degree</button>
+                                            </a>
+                                            </div>
+                                                <ul id="Respond-nav9" class="nav-content collapse">
+                                                <div class="row card-body">
+                                                <div class="col-6">{{ candidate_info.College_Name_secondary|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.College_Degree_secondary|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.College_GPA_secondary|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.College_Degree_secondary_file|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.College_Year_Secondary|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.College_Degree_Year_start|as_crispy_field }}</div>
+
+                                                    <div>
+                                            <a class="link collapsed" data-bs-target="#Respond-nav10"
+                                               data-bs-toggle="collapse" href="#">
+                                                <button type="button" class="btn btn-secondary btn-sm">Add Degree</button>
+                                            </a>
+                                            </div>
+                                                <ul id="Respond-nav10" class="nav-content collapse">
+                                                 <div class="row card-body">
+                                                <div class="col-6">{{ candidate_info.College_Name_tertiary|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.College_Degree_tertiary|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.College_GPA_tertiary|as_crispy_field }}</div>
+                                                 <div class="col-6">{{ candidate_info.College_tertiary_file|as_crispy_field }}</div>
+                                                 <div class="col-6">{{ candidate_info.College_Year_tertiary|as_crispy_field }}</div>
+                                                 <div class="col-6">{{ candidate_info.College_tertiary_Year_start|as_crispy_field }}</div>
+
+
+                                                 </div>
+                                                </ul>
+                                                </div>
+                                                </ul>
+                                            <br>
+                                            <h5 class="card-title"><span>Institution Information</span></h5>
+                                            <div class="row card-body">
+                                                <div class="col-6">{{ candidate_info.Institution_name|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.Ward_name|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.Hours_worked|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.Institution_file|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.Institution_Year_start|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.Institution_Year_end|as_crispy_field }}</div>
+
+                                            </div>
+
+                                            <div>
+                                            <a class="link collapsed" data-bs-target="#Respond-nav6"
+                                               data-bs-toggle="collapse" href="#">
+                                                <button type="button" class="btn btn-secondary btn-sm">Add Institution</button>
+                                            </a>
+                                            </div>
+                                                <ul id="Respond-nav6" class="nav-content collapse">
+                                                <div class="row card-body">
+                                                <div class="col-6">{{ candidate_info.Institution_name_secondary|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.Ward_name_secondary|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.Hours_worked_secondary|as_crispy_field }}</div>
+                                                    <div class="col-6">{{ candidate_info.Institution_file_secondary|as_crispy_field }}</div>
+                                                    <div class="col-6">{{ candidate_info.Institution_secondary_Year_start|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.Institution_secondary_Year_end|as_crispy_field }}</div>
+                                                    <div>
+                                            <a class="link collapsed" data-bs-target="#Respond-nav7"
+                                               data-bs-toggle="collapse" href="#">
+                                                <button type="button" class="btn btn-secondary btn-sm">Add Institution</button>
+                                            </a>
+                                            </div>
+                                                <ul id="Respond-nav7" class="nav-content collapse">
+                                                 <div class="row card-body">
+                                                    <div class="col-6">{{ candidate_info.Institution_name_tertiary|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.Ward_name_tertiary|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.Hours_worked_tertiary|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.Institution_file_tertiary|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.Institution_tertiary_Year_start|as_crispy_field }}</div>
+                                                <div class="col-6">{{ candidate_info.Institution_tertiary_Year_end|as_crispy_field }}</div>
+                                                </div>
+                                                </ul>
+                                                </div>
+                                                </ul>
+                                            <br>
+
+                                        </div>
+                                            <div class="card border-dark p-3">
+                                                    <span class="btn btn-secondary mb-4" style="cursor: default;">
+                                                    Program Preferences
+                                                </span>
+                                                <div class="row card-body">
+                                                    <div class="col-6">{{ candidate_info.Course_Location|as_crispy_field}}</div>
+                                                    <div class="col-6">{{candidate_info.Time|as_crispy_field }}</div>
+                                                    <div class="col-6">{{candidate_info.Days|as_crispy_field }}</div>
+                                                </div>
+                                                <h5 class="card-title"><span>Qualification</span></h5>
+                                                <div class="row card-body">
+                                                    <div class="col-6">{{ candidate_info.Qualification|as_crispy_field}}</div>
+
+                                                </div>
+                                                </div>
+                                            <br>
+                                               <button type="submit" class="btn btn-primary ">POST</button>
+
+
+                                        </fieldset>
+                                    </form>
+                                {% endif %}
+                                </div>
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
- {% else %}
-
-            <div class="pagetitle">
-       <h1>CRM System</h1>
-        <nav>
-            <ol class="breadcrumb"> login to access the system
-            </ol>
-        </nav>
-    </div><!-- End Page Title -->
-          <section class="section align-items-center justify-content-center py-4">
-        <div class="container">
-          <div class="row justify-content-center ">
-            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
-    <img src="{% static 'img/german_logo_new.png' %}" alt="">
-     <h6><span><br>To Sign in <a href="login">Click here </a></span></h6>
-    <p>Contact the administrator in case <br> any resource is not available.</p>
-                    </div>
-          </div>
-        </div>
-
-      </section>
-    {% endif %}
 
 </main><!-- End #main -->
 
@@ -167,7 +405,39 @@
 
 <!-- Template Main JS File -->
 <script src="{% static '/js/main.js' %}"></script>
+<!-- Add this to include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
+<!--form control-->
+<script>
+$(document).ready(function() {
+    $('#FormControl').select2();
+});
+</script>
+<script>
+    $(document).ready(function () {
+        $("#submit-button").click(function () {
+            // Disable the button to prevent multiple submissions
+            $(this).prop('disabled', true);
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'add-application' %}",
+                data: $("#submission-form").serialize(),
+                success: function () {
+                    // Hide the form and show the thank you message
+                    $("#form-container").hide();
+                    $("#thank-you-message").show();
+                },
+                error: function () {
+                    // Handle errors if needed
+                }
+            });
+        });
+    });
+</script>
 </body>
 
 </html>
+
+{% endblock %}

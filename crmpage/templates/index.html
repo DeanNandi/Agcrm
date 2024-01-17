@@ -173,12 +173,12 @@
         <div class="card recent-sales overflow-auto">
             <div class="card-body ">
                 <h5 class="card-title">Ongoing Courses  <span>| Information On Students</span></h5>
-                {% for school in school %}
+                {% for teacher in teacher %}
                 <div class="info d-flex">
                     <div class="card mb-3" style="max-width:100%; max-height: 20rem">
                         <h6 class="card-header">
                             <a href="course_view">
-                                {{ school.course_class_no }} - {{ school.course_intake }}
+                                {{ teacher.course_class_no }} - {{ teacher.course_intake }}
                             </a>
                         </h6>
                         <div class="row g-0 ">
@@ -188,8 +188,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="card-body ">
-                                    <p class="card-text"> {{ school.course_class_no }} - {{ school.course_intake }}</p>
-                                    <span class="font-weight-bold"> Teacher:</span> <a href="">{{ school.lec_first_name }} {{ school.lec_last_name }}</a>
+                                    <p class="card-text"> {{ teacher.course_class_no }} - {{ teacher.course_intake }}</p>
+                                    <span class="font-weight-bold"> Teacher:</span> <a href="">{{ teacher.lec_first_name }} {{ teacher.lec_last_name }}</a>
                                 </div>
                             </div>
                         </div>
@@ -203,25 +203,25 @@
     </div>
  {% else %}
 
-            <div class="pagetitle">
-       <h1>CRM System</h1>
+    <div class="pagetitle">
+        <h1>CRM System</h1>
         <nav>
             <ol class="breadcrumb"> login to access the system
             </ol>
         </nav>
     </div><!-- End Page Title -->
-          <section class="section align-items-center justify-content-center py-4">
+    <section class="section align-items-center justify-content-center py-4">
         <div class="container">
-          <div class="row justify-content-center ">
-            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
-    <img src="{% static 'img/german_logo_new.png' %}" alt="">
-     <h6><span><br>To Sign in <a href="login">Click here </a></span></h6>
-    <p>Contact the administrator in case <br> any resource is not available.</p>
-                    </div>
-          </div>
+            <div class="row justify-content-center ">
+                <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+                    <img src="{% static 'img/german_logo_new.png' %}" alt="">
+                    <h6><span><br>To Sign in <a href="login">Click here </a></span></h6>
+                   <small><p>Contact the administrator in case <br> any resource is not available.</p></small>
+                </div>
+            </div>
         </div>
 
-      </section>
+    </section>
     {% endif %}
 {% endblock %}
 
