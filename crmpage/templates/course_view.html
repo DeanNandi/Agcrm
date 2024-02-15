@@ -73,7 +73,6 @@
                         <i class="bi bi-ban"></i><small><span>Class List</span></small>
                     </a>
                 </li>
-
             </ul>
         </li><!-- End Icons Nav -->
                     <li class="nav-heading">Important Links</li>
@@ -111,77 +110,30 @@
     <div class="container mt-4">
         <div class="card recent-sales overflow-auto">
             <div class="card-body ">
-<!-- course_view.html -->
-<h5 class="card-title">{{ teacher.course_class_no }} - {{ teacher.course_intake }}</h5>
-<h3>Participants</h3>
-<h6>Teacher Name: {{ teacher.lec_first_name }} {{ teacher.lec_last_name }}</h6>
-{% if formset.errors %}
-  <div class="alert alert-danger">
-    <strong>Error:</strong> Please correct the errors below.
-    <ul>
-      {% for error in formset.errors %}
-        <li>{{ error }}</li>
-      {% endfor %}
-    </ul>
-  </div>
-{% endif %}
-
-<!-- Include your attendance recording form outside the loop -->
-<form method="post" action="{% url 'course_view' %}">
-    {% csrf_token %}
-        {{ formset.management_form }}
-    <table id="example" class="table table-striped overflow-auto" border="1" style="width:100%">
-        <thead>
-            <tr>
-                <th>Student Name</th>
-                <th>Date of Class</th>
-                <th>Present</th>
-                <th>Absent</th>
-                <th>Late</th>
-                <th>Absent Reason</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for candidate in candidates %}
-                {% if candidate.course_intake == teacher.course_intake %}
+                <!-- course_view.html -->
+                {% for teachers in teachers %}
+                <h5 class="card-title">{{ teachers.course_class_no }} - {{ teachers.course_intake }}</h5>
+                <h3>Participants</h3>
+                <h6>Teacher Name: {{ teachers.lec_first_name }} {{ teachers.lec_last_name }}</h6>
+                <table id="example" class="table table-striped overflow-auto" border="1" style="width:100%">
+                    <thead>
                     <tr>
-                        <td>{{ candidate.First_Name }} {{ candidate.Last_Name }}</td>
-                        <td>
-                            <!-- Include hidden fields for each student -->
-                            <input type="hidden" name="candidates[]" value="{{ candidate.id }}">
-
-                            <!-- Include a date picker -->
-                            <input type="date" name="date_of_class_{{ candidate.id }}" required>
-                        </td>
-                        <td>
-                            <!-- Checkboxes for attendance status -->
-                            <input type="checkbox" name="is_present_{{ candidate.id }}">
-                            <label for="is_present_{{ candidate.id }}">Present</label>
-                        </td>
-                        <td>
-                            <input type="checkbox" name="is_absent_{{ candidate.id }}">
-                            <label for="is_absent_{{ candidate.id }}">Absent</label>
-                        </td>
-                        <td>
-                            <input type="checkbox" name="is_late_{{ candidate.id }}">
-                            <label for="is_late_{{ candidate.id }}">Late</label>
-                        </td>
-                        <td>
-                            <!-- Text field for absent reason -->
-                            <input type="text" name="absent_reason_{{ candidate.id }}" placeholder="Absent Reason">
-                            <!-- You can add more fields as needed -->
-                        </td>
+                        <th>Student Name</th>
+                        <th>Course Intake</th>
                     </tr>
-                {% endif %}
-            {% endfor %}
-        </tbody>
-    </table>
-    <!-- Single submit button for the entire table -->
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-
-
-
+                    </thead>
+                    <tbody>
+                    {% for candidate in candidates %}
+                    {% if candidate.course_intake == teachers.course_intake %}
+                    <tr>
+                        <td><a href="{% url 'record_attendance' candidate.id %}">{{ candidate.First_Name }} {{ candidate.Last_Name }}</a></td>
+                        <td>{{ candidate.course_intake }}</td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                    {% endfor %}
+                    </tbody>
+                </table>
 
             </div>
         </div>

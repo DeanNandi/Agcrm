@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Applications-page </title>
+    <title>Students </title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -72,8 +72,16 @@
                 <i class="bi bi-chevron-double-left"></i>
                 <span>Candidates' Tab</span>
             </a>
-
         </li><!-- End Dashboard Nav -->
+
+        <!-- Payment History -->
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'payment_history' %}">
+                <i class="bi bi-receipt"></i>
+                <small><span>Payments Made</span></small>
+            </a>
+        </li>
+
 
                <li class="nav-heading">Reports</li>
 
@@ -123,36 +131,6 @@
 
             </ul>
         </li><!-- End Icons Nav -->
-        <li class="nav-heading">Records</li>
-                <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#icons-nav11" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-ui-checks"></i>
-                <small> <span>Register Student</span></small>
-                <i class="bi bi-chevron-compact-down ms-auto"></i>
-            </a>
-            <ul id="icons-nav11" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="add-student">
-                        <i class="bi bi-ban"></i><small><span>Add Student</span></small>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Icons Nav -->
-        <li class="nav-item">
-    <a class="nav-link collapsed" data-bs-target="#responses-nav" data-bs-toggle="collapse" href="#">
-        <i class="bi bi-passport"></i>
-        <small><span>Payment Information</span></small>
-        <i class="bi bi-chevron-compact-down ms-auto"></i>
-    </a>
-    <ul id="responses-nav" class="nav-content collapse"  data-bs-parent="#sidebar-nav">
-        <li>
-            <a href="mpesa/">
-                <i class="bi bi-question-diamond"></i>
-                <small><span>Payment Records</span></small>
-            </a>
-        </li>
-    </ul>
-</li><!-- End Icons Nav -->
                     <li class="nav-heading">Important Links</li>
       <li class="nav-item">
         <a class="nav-link collapsed" href="applications">
@@ -227,6 +205,16 @@
                     </div>
                 </th>
 
+                <!-- Student Admission Number -->
+                <th>
+                    <div>
+                        <button class="btn btn-secondary sm " type="button"
+                                style="cursor: default;" aria-expanded="false">
+                           Admission Number
+                        </button>
+                    </div>
+                </th>
+
                 <!-- Course Location Filter -->
                 <th>
                     <div class="dropdown">
@@ -263,22 +251,6 @@
                     </div>
                 </th>
 
-                <!-- Address Filter -->
-                <th>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="addressFilterDropdown"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                            Address
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="addressFilterDropdown">
-                            <li><a class="dropdown-item" href="{% url 'student-card' %}">All</a></li>
-                            {% for address in unique_addresses %}
-                            <li><a class="dropdown-item{% if address == selected_address %} active{% endif %}"
-                                   href="{% url 'student-card' %}?address={{ address }}">{{ address }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </th>
 
                 <!-- Cohort Filter -->
                 <th>
@@ -303,9 +275,9 @@
             {% if candidate.Results == 'Paid' %}
             <tr>
                 <td style="width: 15%"><a href="{% url 'candidate_detail' candidate.id %}"> {{ candidate.First_Name }} {{ candidate.Last_Name }}</a></td>
+                <td style="width: 10%">{{ candidate.admission_number }}</td>
                 <td style="width: 10%">{{ candidate.Course_Location }}</td>
                 <td style="width: 10%">{{ candidate.Qualification }}</td>
-                <td style="width: 10%">{{ candidate.Address }}</td>
                 <td style="width: 10%">{{ candidate.course_intake }}</td>
             </tr>
             {% endif %}
@@ -315,27 +287,26 @@
             </div>
         </div>
     </div>
- {% else %}
-
-            <div class="pagetitle">
-       <h1>CRM System</h1>
+    {% else %}
+    <br><br><br>
+    <div class="pagetitle container ">
         <nav>
-            <ol class="breadcrumb"> login to access the system
+            <ol class="breadcrumb row justify-content-center"> Access Denied!
             </ol>
         </nav>
     </div><!-- End Page Title -->
-          <section class="section align-items-center justify-content-center py-4">
+    <section class="section align-items-center justify-content-center py-4">
         <div class="container">
-          <div class="row justify-content-center ">
-            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
-    <img src="{% static 'img/german_logo_new.png' %}" alt="">
-     <h6><span><br>To Sign in <a href="login">Click here </a></span></h6>
-    <p>Contact the administrator in case <br> any resource is not available.</p>
-                    </div>
-          </div>
+            <div class="row justify-content-center ">
+                <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+                    <img src="{% static 'img/german_logo_new.png' %}" alt="" style="width: 100%;"><br><br>
+                    <h6><span><br>To Sign in <a href="/login">Click here </a></span></h6>
+                    <p>Contact the administrator in case <br> any resource is not available.</p>
+                </div>
+            </div>
         </div>
 
-      </section>
+    </section>
     {% endif %}
 </main><!-- End #main -->
 

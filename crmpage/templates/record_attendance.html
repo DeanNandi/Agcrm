@@ -163,52 +163,49 @@
 </aside><!-- End Sidebar-->
 
 <main id="main" class="main">
+    <!-- record_attendance.html -->
+<h5 class="card-title">Students Attendance for {{ candidate.First_Name }} {{ candidate.Last_Name }} </h5>
 
-<!-- record_attendance.html -->
-<form method="post" action="{% if candidate.id %}{% url 'record_attendance' candidate.id %}{% endif %}">
-    {% csrf_token %}
-    {{ formset.management_form }}
-    <table id="example" class="table table-striped overflow-auto" border="1" style="width:100%">
-        <thead>
-            <tr>
-                <th>Student Name</th>
-                <th>Date of Class</th>
-                <th>Present</th>
-                <th>Absent</th>
-                <th>Late</th>
-                <th>Absent Reason</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for form in formset %}
-                <tr>
-                    <td>{{ form.instance.candidate.First_Name }} {{ form.instance.candidate.Last_Name }}</td>
-                    <td>
-                        {{ form.date_of_class }}
-                    </td>
-                    <td>
-                        {{ form.is_present }}
-                        <label for="{{ form.is_present.id_for_label }}">Present</label>
-                    </td>
-                    <td>
-                        {{ form.is_absent }}
-                        <label for="{{ form.is_absent.id_for_label }}">Absent</label>
-                    </td>
-                    <td>
-                        {{ form.is_late }}
-                        <label for="{{ form.is_late.id_for_label }}">Late</label>
-                    </td>
-                    <td>
-                        {{ form.absent_reason }}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <!-- Single submit button for the entire formset -->
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+                <div class="justify-content-center">
+                    <div class="form-group container">
+                        <form method="POST" class="mt-5" novalidate>
+                            {% csrf_token %}
+                            <fieldset>
+                                {{ formset.management_form }}
 
+                                {% if formset.non_form_errors %}
+                                    <div class="alert alert-danger">
+                                        <strong>Error(s):</strong>
+                                        <ul>
+                                            {% for error in formset.non_form_errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+
+                                {% for form in formset.forms %}
+                                    <div class="card border-dark p-3">
+                                        <span class="btn btn-secondary mb-4" style="cursor: default;">
+                                            Record Attendance
+                                        </span>
+                                        <div class="container">
+                                            {% for field in form.visible_fields %}
+                                                <div class="row card-body">
+                                                    <div class="col-xl">{{ field|as_crispy_field }}</div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+
+                                <button type="submit" class="btn btn-primary">POST</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+
+</main><!-- End #main -->
 
 
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i

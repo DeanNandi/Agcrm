@@ -57,50 +57,14 @@
 {% if user.is_authenticated %}
     <ul class="sidebar-nav" id="sidebar-nav">
 
+        <!-- Back Button -->
         <li class="nav-item">
-            <a class="nav-link " href="/applications">
-                <i class="bi bi-chevron-double-left"></i>
-                <span>Back To Applications</span>
+            <a class="nav-link" href="javascript:history.go(-1);">
+                <i class="bi bi-arrow-left"></i>
+                <span>Back</span>
             </a>
+        </li>
 
-        </li><!-- End Dashboard Nav -->
-
-        <li class="nav-heading">Reports</li>
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-ui-checks"></i>
-                <small> <span>Applications</span></small>
-                <i class="bi bi-chevron-compact-down ms-auto"></i>
-            </a>
-            <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="/">
-                        <i class="bi bi-ban"></i><small><span>Passed and Failed Applicants</span></small>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Icons Nav -->
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#responses-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-passport"></i>
-                <small> <span>Responses</span></small>
-                <i class="bi bi-chevron-compact-down ms-auto"></i>
-            </a>
-            <ul id="responses-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="/">
-                        <i class="bi bi-question-diamond"></i><small><span>Respond To Client</span></small>
-                    </a>
-                </li>
-                <li>
-                    <a href="/">
-                        <i class="bi bi-patch-check-fill"></i><small><span>Responses Made</span></small>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Icons Nav -->
     </ul>
 
 </aside><!-- End Sidebar-->
@@ -110,7 +74,7 @@
     <div class="col-12">
         <div class="container overflow-auto">
                 <div class="card-body">
-                    <h5 class="card-title">Application in Database <span> | Read Through and Confirm Eligibility </span> </h5>
+                    <h5 class="card-title">Application in Database <span>  </span> </h5>
                     <div class="container col-md-10 edit_box">
 
                         <div class="card text-center" style="max-width">
@@ -119,7 +83,17 @@
 
 
                         <!-- Main form -->
-                        <form method="POST" id="editForm">
+                        <form method="POST" enctype="multipart/form-data" id="editForm">
+                                             {% if form.errors %}
+                                            <div class="alert alert-danger">
+                                                <strong>Error(s):</strong>
+                                                <ul>
+                                                    {% for error in form.errors %}
+                                                    <li>{{ error }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                            {% endif %}
 
                             {% csrf_token %}
 
@@ -175,25 +149,25 @@
         </div>
  {% else %}
 
-            <div class="pagetitle">
-       <h1>CRM System</h1>
+    <div class="pagetitle">
+        <h1>CRM System</h1>
         <nav>
             <ol class="breadcrumb"> login to access the system
             </ol>
         </nav>
     </div><!-- End Page Title -->
-          <section class="section align-items-center justify-content-center py-4">
+    <section class="section align-items-center justify-content-center py-4">
         <div class="container">
-          <div class="row justify-content-center ">
-            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
-    <img src="{% static 'img/german_logo_new.png' %}" alt="">
-     <h6><span><br>To Sign in <a href="login">Click here </a></span></h6>
-    <p>Contact the administrator in case <br> any resource is not available.</p>
-                    </div>
-          </div>
+            <div class="row justify-content-center ">
+                <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+                <img src="{% static 'img/german_logo_new.png' %}" alt="" style="width: 100%;"><br><br>
+                    <h6><span><br>To Sign in <a href="login">Click here </a></span></h6>
+                   <small><p>Contact the administrator in case <br> any resource is not available.</p></small>
+                </div>
+            </div>
         </div>
 
-      </section>
+    </section>
     {% endif %}
 </main><!-- End #main -->
 

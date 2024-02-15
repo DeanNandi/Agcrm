@@ -29,7 +29,7 @@
 
     <!-- Template Main CSS File -->
     <link href="{% static '/css/style.css' %}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <!-- Data table -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
 
 </head>
@@ -73,94 +73,95 @@
         </ol>
     </nav>
 </div><!-- End Page Title -->
-
+<!-- attendance_details.html -->
 {% for teacher in teachers %}
-<div class="row">
-    <div class="col-xl">
-        <table class="table table-bordered">
-            <tr>
-                <th>Teacher</th>
-                <td>{{ teacher.lec_first_name }} {{ teacher.lec_last_name }}</td>
-            </tr>
-            <tr>
-                <th>Course Intake</th>
-                <td>{{ teacher.course_intake }}</td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="col-xl">
-        <table class="table table-bordered">
-            <tr>
-                <th>Course Number</th>
-                <td>{{ teacher.course_class_no }}</td>
-            </tr>
-
-            <!-- Move candidate-related information outside the loop -->
-            <tr>
-                <th>Details for</th>
-                <td>{{ candidate.First_Name }} {{ candidate.Last_Name }}, {{ candidate.admission_number }}</td>
-            </tr>
-        </table>
-    </div>
-</div>
-
-<!-- Attendance records -->
-<div class="container mt-4">
-    <div class="card recent-sales overflow-auto">
-        <div class="card-body">
+      {% if candidate.course_intake == teacher.course_intake %}
+    <div class="row">
+        <div class="col-xl">
             <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Attendance Status</th>
-                        <th>Absent Reason</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for attendance in attendances %}
-                        <tr>
-                            <td>{{ attendance.date_of_class }}</td>
-                            <td>
-                                {% if attendance.is_present %}
-                                    Present
-                                {% elif attendance.is_absent %}
-                                    Absent
-                                {% elif attendance.is_late %}
-                                    Late
-                                {% endif %}
-                            </td>
-                            <td>{{ attendance.absent_reason }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
+                <tr>
+                    <th>Teacher</th>
+                    <td>{{ teacher.lec_first_name }} {{ teacher.lec_last_name }}</td>
+                </tr>
+                <tr>
+                    <th>Course Intake</th>
+                    <td>{{ teacher.course_intake }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="col-xl">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Course Number</th>
+                    <td>{{ teacher.course_class_no }}</td>
+                </tr>
+
+                <tr>
+                    <th>Details for</th>
+                    <td>{{ candidate.First_Name }} {{ candidate.Last_Name }}, {{ candidate.admission_number }}</td>
+                </tr>
             </table>
         </div>
     </div>
-</div>
+        <!-- attendance records -->
+        <div class="container mt-4">
+            <div class="card recent-sales overflow-auto">
+                <div class="card-body ">
+                    <p>Total Number Of Classes: {{ attendances.count }}</p>
+
+                    {% if attendances %}
+                      <table id="example1" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Present?</th>
+                                    <th>Absent Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for attendance in attendances %}
+                                    <tr>
+                                        <td>{{ attendance.date }}</td>
+                                        <td>
+                                            {{ attendance.present }}
+                                        </td>
+                                        <td>{{ attendance.absent_reason }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p>No attendance records found for this candidate.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+      {% endif %}
 {% endfor %}
+
 
     {% else %}
 
-            <div class="pagetitle">
-       <h1>CRM System</h1>
+    <div class="pagetitle">
+        <h1>CRM System</h1>
         <nav>
             <ol class="breadcrumb"> login to access the system
             </ol>
         </nav>
     </div><!-- End Page Title -->
-          <section class="section align-items-center justify-content-center py-4">
+    <section class="section align-items-center justify-content-center py-4">
         <div class="container">
-          <div class="row justify-content-center ">
-            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
-    <img src="{% static 'img/german_logo_new.png' %}" alt="">
-     <h6><span><br>To Sign in <a href="login">Click here </a></span></h6>
-    <p>Contact the administrator in case <br> any resource is not available.</p>
-                    </div>
-          </div>
+            <div class="row justify-content-center ">
+                <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+                    <img src="{% static 'img/german_logo_new.png' %}" alt="" style="width: 100%;"><br><br>
+                    <h6><span><br>To Sign in <a href="login">Click here </a></span></h6>
+                    <p>Contact the administrator in case <br> any resource is not available.</p>
+                </div>
+            </div>
         </div>
 
-      </section>
+    </section>
     {% endif %}
 </main><!-- End #main -->
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i

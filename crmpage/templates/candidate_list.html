@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Candidates</title>
+    <title>Potential Students</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -91,6 +91,15 @@
             </a>
 
         </li><!-- End Dashboard Nav -->
+
+        <!-- Payment History -->
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'payment_history' %}">
+                <i class="bi bi-receipt"></i>
+                <small><span>Payments Made</span></small>
+            </a>
+        </li>
+
 
         <li class="nav-heading">Reports</li>
 
@@ -205,7 +214,7 @@
                 <div class="card-body">
 
                     <div class="table-responsive">
-                        <h5 class="card-title">Candidate Information <span>| Update Contracts and Payment Information</span>
+                        <h5 class="card-title">Potential Students <span>| Update Contracts and Payment Information</span>
                         </h5>
 
                         <table id="example1" class="table table-striped table-bordered">
@@ -213,8 +222,8 @@
                             <tr>
                                 <th>
                                     <div>
-                                        <button class="btn btn-secondary " type="button"
-                                                style="cursor: default;" aria-expanded="false">
+                                        <button class="btn btn-secondary" type="button"
+                                                style="cursor: default;" aria-expanded="false" >
                                             Name
                                         </button>
                                     </div>
@@ -295,7 +304,7 @@
                                             data-url="{% url 'edit_results' candidate_id=candidate.id %}">
                                         {{ candidate.First_Name }} {{ candidate.Last_Name }}
                                     </button>
-                                    <br> <br> ({{ candidate.Results }})
+                                    <br> <br> Enrollment Fee is {{ candidate.Results }}
                                 </td>
                                 <td>{{ candidate.Course_Location }}</td>
                                 <td>{{ candidate.Qualification }}</td>
@@ -365,7 +374,7 @@
             <div class="row justify-content-center ">
                 <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
                     <img src="{% static 'img/german_logo_new.png' %}" alt="">
-                    <h6><span><br>To Sign in <a href="login">Click here </a></span></h6>
+                    <h6><span><br>To Sign in <a href="/login">Click here </a></span></h6>
                     <p>Contact the administrator in case <br> any resource is not available.</p>
                 </div>
             </div>

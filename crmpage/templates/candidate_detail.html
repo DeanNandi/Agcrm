@@ -127,19 +127,11 @@
 <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
 
-        <!-- Students' Tab -->
+        <!-- Back Button -->
         <li class="nav-item">
-            <a class="nav-link" href="/student-card">
-                <i class="bi bi-person"></i>
-                <span>Students' Tab</span>
-            </a>
-        </li>
-
-        <!-- Candidates' Tab -->
-        <li class="nav-item">
-            <a class="nav-link" href="/candidates">
-                <i class="bi bi-person-plus"></i>
-                <span>Candidates' Tab</span>
+            <a class="nav-link" href="javascript:history.go(-1);">
+                <i class="bi bi-arrow-left"></i>
+                <span>Back</span>
             </a>
         </li>
 
@@ -151,12 +143,20 @@
             </a>
         </li>
 
+        <!-- Unique Payments -->
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'unique_payment' candidate_id=candidate.id %}">
+                <i class="bi bi-credit-card"></i>
+                <span>Payment History</span>
+            </a>
+        </li>
+
         <!-- Signed Contract or Upload Contract -->
         <li class="nav-item">
             {% if contract.signed_contract %}
             <a class="nav-link" href="{{ contract.signed_contract.url }}" target="_blank">
                 <i class="bi bi-file-earmark-font"></i>
-                <span>Access Contract</span>
+                <span>View The Contract</span>
             </a>
             {% else %}
             <form method="post" enctype="multipart/form-data" action="{% url 'upload_contract' candidate.id %}"
@@ -175,22 +175,6 @@
             {% endif %}
         </li>
 
-        <!-- Coursework Marks -->
-<!--        <li class="nav-item">-->
-<!--            <a class="nav-link" href="#">-->
-<!--                <i class="bi bi-card-list"></i>-->
-<!--                <span>Coursework Marks</span>-->
-<!--            </a>-->
-<!--        </li>-->
-
-        <!-- Exam Marks -->
-<!--        <li class="nav-item">-->
-<!--            <a class="nav-link" href="#">-->
-<!--                <i class="bi bi-file-bar-graph"></i>-->
-<!--                <span>Exam Marks</span>-->
-<!--            </a>-->
-<!--        </li>-->
-
         <!-- Attendance -->
         <li class="nav-item">
             <a class="nav-link" href="{% url 'attendance_details' candidate.id %}">
@@ -199,8 +183,41 @@
             </a>
         </li>
 
+        <!-- Update Profile -->
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'edit_candidate' pk=candidate.id model_type='Candidate' %}">
+                <i class="bi bi-pencil"></i>
+                <span>Update Profile</span>
+            </a>
+        </li>
+
+
+        <!-- Generate Admission Letter -->
+        <li class="nav-item">
+            {% if admission and admission.pdf_file %}
+            <a class="nav-link" href="{{ admission.pdf_file.url }}" target="_blank">
+                <i class="bi bi-file-earmark-text"></i>
+                <span>View Admission Letter</span>
+            </a>
+            {% else %}
+            <a class="nav-link" href="{% url 'generate_admissions' candidate_id=candidate.id %}">
+                <i class="bi bi-file-earmark-text"></i>
+                <span>Generate Admission Letter</span>
+            </a>
+            {% endif %}
+        </li>
+        <!-- Fee Structure -->
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'Generate_Fee_Structure' candidate_id=candidate.id %}">
+                <i class="bi bi-file-earmark-text"></i> <!-- Changed icon to bi-file-earmark-text -->
+                <span>Generate Fee Structure</span>
+            </a>
+        </li>
+
+
     </ul>
 </aside><!-- End Sidebar-->
+
 
 
 <main id="main" class="main">
@@ -237,7 +254,7 @@
                                     </tr>
                                     <tr>
                                         <td><strong>Admission Number:</strong></td>
-                                        <td>{{ candidate.admission_number }}</td>
+                                        <td>{{ candidate.countty_code }}{{ candidate.admission_number }}</td>
                                     </tr>
                                     <tr>
                                         <td><strong>Other Names:</strong></td>
@@ -262,14 +279,6 @@
                                     <tr>
                                         <td><strong>Mail:</strong></td>
                                         <td>{{ candidate.email_address }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Scheduled Interview Date:</strong></td>
-                                        <td>{{ candidate.Schedule_Interview_date }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Scheduled Interview Time:</strong></td>
-                                        <td>{{ candidate.Schedule_Interview_time }}</td>
                                     </tr>
                                     <tr>
                                         <td><strong>Interview Results:</strong></td>

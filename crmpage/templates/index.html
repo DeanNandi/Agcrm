@@ -30,6 +30,15 @@
     <!-- Template Main CSS File -->
     <link href="{% static '/css/style.css' %}" rel="stylesheet">
 
+    <!-- Data table -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+<style>
+    .attendance-card {
+        max-width: 350px; /* Adjust this value to change the card size */
+
+    }
+</style>
+
 </head>
 
 <body>
@@ -62,23 +71,11 @@
             </a>
         </li><!-- End Dashboard Nav -->
 {% if user.is_authenticated %}
+        {% if user.username in 'Admin,Duncan_kimani,Mariam' %}
+
         <li class="nav-heading">Records</li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-ui-checks"></i>
-                <small> <span>Register Student</span></small>
-                <i class="bi bi-chevron-compact-down ms-auto"></i>
-            </a>
-            <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="add-student">
-                        <i class="bi bi-ban"></i><small><span>Add Student</span></small>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Icons Nav -->
-                <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#icons-nav3" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-ui-checks"></i>
                 <small> <span>Register Teacher</span></small>
@@ -92,29 +89,29 @@
                 </li>
             </ul>
         </li><!-- End Icons Nav -->
-<li class="nav-item">
-    <a class="nav-link collapsed" data-bs-target="#responses-nav" data-bs-toggle="collapse" href="#">
-        <i class="bi bi-passport"></i>
-        <small><span>Payment Information</span></small>
-        <i class="bi bi-chevron-compact-down ms-auto"></i>
-    </a>
-    <ul id="responses-nav" class="nav-content collapse"  data-bs-parent="#sidebar-nav">
-        <li>
-            <a href="mpesa/">
-                <i class="bi bi-question-diamond"></i>
-                <small><span>Payment Records</span></small>
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#responses-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-passport"></i>
+                <small><span>Payment Information</span></small>
+                <i class="bi bi-chevron-compact-down ms-auto"></i>
             </a>
-        </li>
-    </ul>
-</li><!-- End Icons Nav -->
+            <ul id="responses-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="mpesa/">
+                        <i class="bi bi-question-diamond"></i>
+                        <small><span>Payment Records</span></small>
+                    </a>
+                </li>
+            </ul>
+        </li><!-- End Icons Nav -->
 
-                <li class="nav-heading">Important Links</li>
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="applications">
-          <i class="bi bi-card-list"></i>
-         <small><span>Applications</span></small>
-        </a>
-      </li><!-- End Register Page Nav -->
+        <li class="nav-heading">Important Links</li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="applications">
+                <i class="bi bi-card-list"></i>
+                <small><span>Applications</span></small>
+            </a>
+        </li><!-- End Register Page Nav -->
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="/admin">
@@ -122,7 +119,19 @@
          <small><span>Administration Panel</span></small>
         </a>
       </li><!-- End Login Page Nav -->
-                        <li class="nav-heading">EXIT</li>
+<!--        <li class="nav-heading">My Info</li>-->
+<!--      <li class="nav-item">-->
+<!--        <a class="nav-link collapsed" href="applications">-->
+<!--          <i class="bi bi-card-list"></i>-->
+<!--         <small><span>My Profile</span></small>-->
+<!--        </a>-->
+<!--      </li>-->
+        <!-- End Register Page Nav -->
+
+        {% endif %}
+        <!-- End of permissions-->
+
+        <li class="nav-heading">EXIT</li>
         <li class="nav-item">
             <a class="nav-link collapsed" href="logout">
                 <i class="bi bi-box-arrow-in-left"></i>
@@ -132,12 +141,6 @@
         {% else %}
 
         <li class="nav-heading">Login</li>
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="register">
-                <i class="bi bi-card-list"></i>
-                <small><span>Register</span></small>
-            </a>
-        </li><!-- End Register Page Nav -->
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="login">
@@ -154,77 +157,307 @@
 
     {% block content %}
 {% if user.is_authenticated %}
-    <div class="pagetitle">
-        <h1>HomePage</h1>
-        <nav>
-            <ol class="breadcrumb">
+<div class="pagetitle" style="text-align: center;">
+    <h1>HomePage</h1>
+    <nav style="display: inline-block;">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><span> Hello {{user.username}}! <i class="bi bi-emoji-smile"></i>
+                Welcome to the AG-System</span></li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
 
-                <li class="breadcrumb-item"><span> Hello {{user.username}}! Welcome to the AG-System</span></li>
+
+{% if user.username in 'Admin,Duncan_kimani,Mariam' %}
+
+<!-- Display Attendance Status -->
+<div class="card attendance-card">
+    <div class="card-header">
+        View Attendance
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <table class="table">
+                <tbody>
+                    {% for field in form %}
+                    <tr>
+                        <th style="text-align:">  {{ field.label_tag }}</th>
+                        <td style="text-align: center; width: 5%">{{ field }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-primary">View Attendance</button>
+        </form>
+    </div>
+</div>
 
 
-            </ol>
-        </nav>
+<div class="pagetitle" style="text-align: center;">
+    <h1>{{ selected_month_name }} Attendance Status</h1>
     </div><!-- End Page Title -->
 
+     <table id="example2" class="table table-bordered">
+        <thead>
+            <tr>
+                <th style="text-align: center;">Date</th>
+                <th style="text-align: center;">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for date, status in attendance_status.items %}
+            <tr>
+                <td style="text-align: center; width: 5%">{{ date }}</td>
+                <td style="text-align: center; width: 5%">{{ status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-<!--start of cards-->
+          <br>
+          <br>
 
-    <div class="container mt-4">
-        <div class="card recent-sales overflow-auto">
-            <div class="card-body ">
-                <h5 class="card-title">Ongoing Courses  <span>| Information On Students</span></h5>
-                {% for teacher in teacher %}
-                <div class="info d-flex">
-                    <div class="card mb-3" style="max-width:100%; max-height: 20rem">
-                        <h6 class="card-header">
-                            <a href="course_view">
-                                {{ teacher.course_class_no }} - {{ teacher.course_intake }}
-                            </a>
-                        </h6>
-                        <div class="row g-0 ">
-                            <div class="col-md-3 ">
-                                <img src="{% static 'img/german_flag.png' %}" class="img-fluid rounded-start" alt="..."
-                                     style="height: 100%;">
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card-body ">
-                                    <p class="card-text"> {{ teacher.course_class_no }} - {{ teacher.course_intake }}</p>
-                                    <span class="font-weight-bold"> Teacher:</span> <a href="">{{ teacher.lec_first_name }} {{ teacher.lec_last_name }}</a>
-                                </div>
-                            </div>
-                        </div>
+
+
+<!-- Beginning of Cards -->
+    <section class="section dashboard">
+      <div class="row">
+
+            <!-- Left side -->
+      <div class="col-lg-8">
+          <div class="row">
+
+            <!-- Fees Card -->
+            <div class="col-xxl-4 col-md-6">
+              <div class="card info-card sales-card">
+                <div class="card-body">
+                  <h5 class="card-title">Fees <br><br>
+                  <span> Update the Payment Structure</span>
+                  </h5>
+
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                        {% if user.username == 'Admin' %}
+                        <a href="{% url 'fee_structure' %}"><i class="bi bi-buildings"></i></a>
+                            {% else %}
+                        <i class="bi bi-buildings"></i>
+                        {% endif %}
                     </div>
-                </div>
-                {% endfor %}
 
+                    <div class="ps-3">
+                        <span class="text-muted small pt-1">The Enrollment Fee is </span>
+                      <span class="text-success small pt-2 fw-bold">{{total_amount_to_pay}} Ksh </span><br>
+                        <span class="text-secondary small pt-2">Updated on the {{fee_date}}</span><br>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div><!-- End Fees Card -->
+
+              <!-- Discounts Card -->
+            <div class="col-xxl-4 col-md-6">
+              <div class="card info-card sales-card">
+                <div class="card-body">
+                  <h5 class="card-title">Discounts <br><br>
+                  <span> Add Discounts For All Students</span>
+                  </h5>
+
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                        {% if user.username == 'Admin' %}
+                   <a href="create_discount/"><i class="bi bi-person-hearts"></i></a>
+                        {% else %}
+                        <i class="bi bi-person-hearts"></i>
+                        {% endif %}
+                    </div>
+
+                    <div class="ps-3">
+                        <span class="text-muted small pt-1">The Discount being Given is</span>
+                      <span class="text-success small pt-2 fw-bold">{{discount_given}} Ksh</span><br>
+                        <span class="text-secondary small pt-2">Updated on the {{discount_date}}</span><br>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div><!-- End Discounts Card -->
+
+              <!-- MPESA Card -->
+            <div class="col-xxl-4 col-md-6">
+              <div class="card info-card sales-card">
+                <div class="card-body">
+                  <h5 class="card-title">MPESA <br><br>
+                  <span> View Payments Made</span>
+                  </h5>
+
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-wallet2"></i>
+                    </div>
+
+                    <div class="ps-3">
+                        <span class="text-muted small pt-1">Coming Soon</span>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div><!-- End Fees Card -->
+
+              <!-- Payment Records Card -->
+            <div class="col-xxl-4 col-md-6">
+              <div class="card info-card sales-card">
+                <div class="card-body">
+                  <h5 class="card-title"> Transactions  <br><br>
+                  <span>Search & View Payment Records</span>
+                  </h5>
+
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <a href="/payment-history/"> <i class="bi bi-currency-dollar"></i></a>
+                    </div>
+
+                    <div class="ps-3">
+                        <span class="text-muted small pt-1">Click Here To View Transactions</span>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div><!-- End Fees Card -->
+          </div>
+
+      </div>
+
+
+        <!-- Right side columns -->
+        <div class="col-lg-4">
+
+          <!-- Analytics Bar -->
+          <div class="card">
+
+            <div class="card-body">
+              <h5 class="card-title">Analytics <span></span></h5>
+
+              <div class="activity">
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">Website <br>Applications </div>
+                  <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
+                  <div class="activity-content">
+                      There are
+                      <span class="text-success small pt-2 fw-bold">{{total_applications}}</span>
+                      Captured from the Google Sheets.
+                  </div>
+                </div><!-- End activity <item-->
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">Eligible <br>Applications</div>
+                  <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
+                  <div class="activity-content">
+                      There are
+                      <span class="text-warning small pt-2 fw-bold">{{eligible_Applications}}</span>
+                      Applications marked as Eligible.
+                  </div>
+                </div><!-- End activity <item-->
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">Potential <br> Applications</div>
+                  <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
+                  <div class="activity-content">
+                      There are
+                      <span class="text-primary small pt-2 fw-bold">{{total_candidates}}</span>
+                      Potential Candidates Added to the system.
+                  </div>
+                </div><!-- End activity <item-->
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">Confirmed <br> Applications</div>
+                  <i class='bi bi-circle-fill activity-badge text-info align-self-start'></i>
+                  <div class="activity-content">
+                      There are
+                      <span class="text-info small pt-2 fw-bold">{{total_students}}</span>
+                      Confirmed students Who have paid the Enrollment Fee.
+                  </div>
+                </div><!-- End activity item-->
+
+              </div>
 
             </div>
-        </div>
-    </div>
- {% else %}
+          </div><!-- End Recent Activity -->
 
-    <div class="pagetitle">
+       </div><!-- End Right side columns -->
+{% endif %}
+          <!-- Start of table -->
+          <div class="container mt-4">
+              <div class="card recent-sales overflow-auto">
+                  <div class="card-body">
+                      <h5 class="card-title">Ongoing Courses </h5>
+                      <table id="example1" class="table table-bordered">
+                          <thead>
+                          <tr>
+                              <th>Image</th>
+                              <th>Course</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          {% for teacher in teacher %}
+                          <tr>
+                              <td style="width: 20%">
+                                  <a href="class_attendance/"><img src="{% static 'img/german_flag.png' %}"
+                                                                   class="img-fluid rounded" alt="..."
+                                                                   style="width: 100%;"></a>
+                              </td>
+                              <td>
+                                  <p><a href="class_attendance/">{{ teacher.course_class_no }} -
+                                      {{ teacher.course_intake }}</a></p>
+                                  <p><span class="font-weight-bold">Teacher: </span> {{ teacher.lec_first_name }}
+                                      {{ teacher.lec_last_name }}</p>
+
+                              </td>
+
+                          </tr>
+                          {% endfor %}
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+          </div>
+          <!-- End of table -->
+
+
+    {% else %}
+    <br><br>
+    <div class="pagetitle" style="text-align: center;">
         <h1>CRM System</h1>
-        <nav>
+    <nav style="display: inline-block;">
             <ol class="breadcrumb"> login to access the system
             </ol>
-        </nav>
+    </nav>
     </div><!-- End Page Title -->
-    <section class="section align-items-center justify-content-center py-4">
+    <section id="hero" class="hero d-flex flex-column justify-content-center align-items-center" data-aos="fade"
+             data-aos-delay="1500">
         <div class="container">
             <div class="row justify-content-center ">
                 <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
-                    <img src="{% static 'img/german_logo_new.png' %}" alt="">
-                    <h6><span><br>To Sign in <a href="login">Click here </a></span></h6>
-                   <small><p>Contact the administrator in case <br> any resource is not available.</p></small>
+                <img src="{% static 'img/german_logo_new.png' %}" alt="" style="width: 100%;"><br><br>
+                    <h6><span><br>To Sign in <a href="/login">Click here </a></span></h6>
+                    <small>
+                        Contact the IT Administrator in-case<br> Any resource is not available.
+                    </small>
                 </div>
             </div>
         </div>
 
     </section>
+      </div>
     {% endif %}
 {% endblock %}
-
+    </section>
 </main><!-- End #main -->
 
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
@@ -242,7 +475,16 @@
 
 <!-- Template Main JS File -->
 <script src="{% static '/js/main.js' %}"></script>
+<!--datatables-->
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
+
+<script>
+    new DataTable('#example1');
+    new DataTable('#example2');
+</script>
 </body>
 
 </html>

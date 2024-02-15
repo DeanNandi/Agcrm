@@ -1,0 +1,231 @@
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>AG-System </title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="{% static 'img/german_flag.png' %}" rel="icon">
+    <link href="{% static 'img/german_flag.png' %}" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/quill/quill.snow.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/quill/quill.bubble.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/simple-datatables/style.css' %}" rel="stylesheet">
+
+            <!-- Data table -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+
+    <!-- Template Main CSS File -->
+    <link href="{% static '/css/style.css' %}" rel="stylesheet">
+    <style>
+        .fee-form {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .fee-form h2 {
+            text-align: center;
+        }
+
+        .fee-form form {
+            margin-top: 20px;
+        }
+
+        .fee-form button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+           /* Add this style in the head section or your CSS file */
+    button {
+        background-color: #4CAF50; /* Green background color */
+        color: white; /* White text color */
+        padding: 10px 20px; /* Padding around text */
+        border: none; /* No border */
+        border-radius: 5px; /* Rounded corners */
+        cursor: pointer; /* Cursor style on hover */
+    }
+
+    /* Add a hover effect */
+    button:hover {
+        background-color: #45a049; /* Darker green on hover */
+    }
+    </style>
+
+
+</head>
+
+<body>
+
+<!-- ======= Header ======= -->
+<header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="d-flex align-items-center justify-content-between">
+        <a href="/" class="logo d-flex align-items-center">
+            <img src="{% static 'img/german_flag.png' %}" alt="">
+            <span class="d-none d-lg-block">AG System</span>
+        </a>
+        <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+    <nav class="header-nav ms-auto">
+
+    </nav><!-- End Icons Navigation -->
+
+</header><!-- End Header -->
+{% if user.is_authenticated %}
+
+<!-- ======= Sidebar ======= -->
+<aside id="sidebar" class="sidebar">
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+        <!-- Back Button -->
+        <li class="nav-item">
+            <a class="nav-link" href="javascript:history.go(-1);">
+                <i class="bi bi-arrow-left"></i>
+                <span>Back</span>
+            </a>
+        </li>
+    </ul>
+</aside><!-- End Sidebar-->
+
+<main id="main" class="main">
+
+    <div class="col-12">
+        <div class="container overflow-auto">
+            <div class="card-body">
+        <div class="card-header text-center">
+            <h5 class="card-title">Fee Structure <span>| Update The Fee Structure</span> </h5>
+        </div>
+                <br>
+                <div class="container col-md-10 edit_box">
+                    <div class="justify-content-center">
+                        <div class="form-group container fee-form">
+
+                <div class="card-body">
+                    {% if thank_you_message %}
+                    <div class="alert alert-success">
+                        {{ thank_you_message }}
+                        <a href="/">Click Here</a>
+                    </div>
+                    {% else %}
+                            <form method="post">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <button type="submit">Submit</button>
+                            </form>
+
+                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-4">
+        <div class="card recent-sales overflow-auto">
+            <div class="card-body">
+            <h5 class="card-title">Fees Invoiced <span>|  Details On all Fees Invoiced To Students</span>
+            </h5>
+                <table id="example" class="table table-bordered table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th style="text-align: center;">Date</th>
+                        <th style="text-align: center;">Program Duration</th>
+                        <th style="text-align: center;">For The Class</th>
+                        <th style="text-align: center;">Invoice Number</th>
+                        <th style="text-align: center;">Amount To Pay</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for fee in fees %}
+                    <tr>
+                        <td style="text-align: center;">From {{ fee.starting_date }} To {{ fee.due_date }}</td>
+                        <td style="text-align: center;">To be Paid in {{ fee.duration }} days</td>
+                        <td style="text-align: center;">{{ fee.fee_assignment }}</td>
+                        <td style="text-align: center;">{{ fee.invoice_number }}</td>
+                        <td style="text-align: center;">{{ fee.total_amount_to_pay }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+                        {% endif %}
+ {% else %}
+
+<br><br>
+<div class="pagetitle" style="text-align: center;">
+    <h1>CRM System</h1>
+    <nav style="display: inline-block;">
+        <ol class="breadcrumb"> login to access the system
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+<section id="hero" class="hero d-flex flex-column justify-content-center align-items-center" data-aos="fade"
+         data-aos-delay="1500">
+    <div class="container">
+        <div class="row justify-content-center ">
+            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+                <img src="{% static 'img/german_logo_new.png' %}" alt="" style="width: 100%;"><br><br>
+                <h6><span><br>To Sign in <a href="/login">Click here </a></span></h6>
+                <small>
+                    Contact the IT Administrator in-case<br> Any resource is not available.
+                </small>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+{% endif %}
+
+</main><!-- End #main -->
+
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
+
+<!-- Vendor JS Files -->
+<script src="{% static 'vendor/apexcharts/apexcharts.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/chart.js' %}/chart.umd.js' %}"></script>
+<script src="{% static 'vendor/echarts/echarts.min.js' %}"></script>
+<script src="{% static 'vendor/quill/quill.min.js' %}"></script>
+<script src="{% static 'vendor/simple-datatables/simple-datatables.js' %}"></script>
+<script src="{% static 'vendor/tinymce/tinymce.min.js' %}"></script>
+<script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+
+<!-- Template Main JS File -->
+<script src="{% static '/js/main.js' %}"></script>
+
+<!--datatables-->
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    new DataTable('#example');
+</script>
+</body>
+
+</html>
+{% endblock %}

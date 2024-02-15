@@ -90,13 +90,14 @@ WSGI_APPLICATION = 'crmsystem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'Institute_db',
+        'NAME': 'newdb',
         'USER': 'postgres',
         'PASSWORD': 'dean45114',
         'HOST': 'localhost',
         'PORT': '5432',
     }
 }
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
